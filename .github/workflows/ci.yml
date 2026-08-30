@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scripts-and-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bash 脚本语法检查
+        run: |
+          bash -n scripts/codex-doctor.sh
+          bash -n scripts/check-links.sh
+
+      - name: PowerShell 脚本解析检查
+        shell: pwsh
+        run: |
+          $path = Join-Path $PWD 'scripts/codex-doctor.ps1'
+          $tokens = $null; $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors -and $errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Host ("Line {0}: {1}" -f $_.Extent.StartLineNumber, $_.Message) }
+            exit 1
+          }
+          Write-Host 'codex-doctor.ps1 解析通过'
+
+      - name: Node 脚本语法检查
+        run: node --check scripts/gen-releases.mjs
+
+      - name: Markdown 相对链接检查
+        run: bash scripts/check-links.sh

@@ -1,0 +1,12 @@
+# lychee 外链检查配置（.github/workflows/link-check.yml 使用）
+# 以下站点对自动化请求返回异常状态码（反爬/人机验证），无法作为链接健康度的依据
+max_retries = 2
+no_progress = true
+
+exclude = [
+  'zhihu\.com',
+  'blog\.csdn\.net',
+  'cloud\.tencent\.com',
+  'help\.apiyi\.com',
+  'developers\.openai\.com', # Cloudflare 拦自动化请求（403），浏览器访问正常
+]

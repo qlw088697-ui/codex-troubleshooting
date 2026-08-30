@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: openai/codex 官方 Issues
+    url: https://github.com/openai/codex/issues
+    about: 疑似 Codex 本体的 bug 或功能建议，请反馈到官方仓库

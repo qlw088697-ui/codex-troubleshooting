@@ -39,3 +39,12 @@
 - 中文为主，命令、报错原文保留英文；
 - 不确定的事情就写「可能」，别把猜测写成结论；
 - 涉及关闭沙箱、绕过审批等高风险操作，必须附风险提示。
+
+## CI 检查
+
+每个 PR 会自动跑（见 `.github/workflows/ci.yml`）：
+
+1. 自检脚本与工具脚本的语法检查（bash / PowerShell / Node）；
+2. Markdown 相对链接检查（`scripts/check-links.sh`）——改文件名、挪文档时务必本地跑一遍。
+
+另有每周定时任务：外链存活检查（`link-check.yml`）和 Codex 版本追踪更新（`track-releases.yml`，运行 `scripts/gen-releases.mjs` 重新生成 `docs/releases.md`，有变化才自动提交）。

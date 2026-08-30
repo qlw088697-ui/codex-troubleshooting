@@ -1,0 +1,36 @@
+# 每周自动追踪 openai/codex 的 Release，更新 docs/releases.md
+name: 版本追踪
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # 每周一 03:00 UTC
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/track-releases.yml', 'scripts/gen-releases.mjs']
+
+permissions:
+  contents: write
+
+jobs:
+  update-releases:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 生成 docs/releases.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gen-releases.mjs
+
+      - name: 有变更则提交
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet docs/releases.md; then
+            echo "无新版本，跳过提交"
+          else
+            git add docs/releases.md
+            git commit -m "docs: 自动更新 Codex 版本追踪 [skip ci]"
+            git push
+          fi

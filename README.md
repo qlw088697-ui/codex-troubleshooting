@@ -1,9 +1,12 @@
 # Codex Troubleshooting — Codex CLI 维护与排障手册
 
+中文 | [English](README.en.md)
+
 > 一份面向中文用户的 [Codex CLI](https://github.com/openai/codex) 维护支持手册：安装、登录认证、网络代理、配置文件、用量限额、MCP、Windows 兼容等常见问题的**症状 → 原因 → 解决步骤**速查。
 >
 > A Chinese-first troubleshooting & maintenance guide for OpenAI Codex CLI.
 
+[![CI](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml/badge.svg)](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20WSL-lightgrey)](docs/06-sandbox-windows.md)
 
@@ -44,6 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 | Windows 写文件被拒 / 沙箱报错 / 想在 WSL 里跑 | [06 沙箱与 Windows](docs/06-sandbox-windows.md) |
 | MCP 工具不出现 / MCP server 启动失败 | [07 MCP 配置](docs/07-mcp.md) |
 | 想清理 / 备份 / 迁移机器 / 完全重置 | [09 日常维护](docs/09-maintenance.md) |
+| 想看 Codex 出了哪些新版本 | [版本追踪](docs/releases.md)（CI 每周自动更新） |
 
 ## 文档目录
 
@@ -57,10 +61,13 @@ docs/
 ├── 06-sandbox-windows.md   审批/沙箱模式、Windows 原生与 WSL2 方案
 ├── 07-mcp.md               MCP server 配置与排障
 ├── 08-errors-quickref.md   常见报错速查表（报错关键词 → 处理方案）
-└── 09-maintenance.md       日常维护：升级、清理、备份、迁移、重置
+├── 09-maintenance.md       日常维护：升级、清理、备份、迁移、重置
+└── releases.md             Codex 版本追踪（CI 每周自动生成）
 scripts/
 ├── codex-doctor.ps1        Windows 环境自检脚本
-└── codex-doctor.sh         macOS / Linux / WSL 环境自检脚本
+├── codex-doctor.sh         macOS / Linux / WSL 环境自检脚本
+├── check-links.sh          Markdown 相对链接检查（CI 同款）
+└── gen-releases.mjs        版本追踪生成器（CI 每周运行）
 ```
 
 ## 通用排查五步法

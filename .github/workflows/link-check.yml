@@ -1,0 +1,23 @@
+# 每周外链存活检查（信息性任务，失败不影响 push）
+# 知乎 / CSDN / 腾讯云等站点对爬虫返回异常状态码，已在 lychee.toml 中排除
+name: 外链检查
+
+on:
+  schedule:
+    - cron: '30 2 * * 1' # 每周一 02:30 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查文档外链
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: '--no-progress ./**/*.md'
+          fail: true
