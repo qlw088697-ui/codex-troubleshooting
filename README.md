@@ -7,6 +7,7 @@
 > A Chinese-first troubleshooting & maintenance guide for OpenAI Codex CLI.
 
 [![CI](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml/badge.svg)](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml)
+[![Latest Codex](https://img.shields.io/github/v/release/openai/codex?label=latest%20codex)](docs/releases.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20WSL-lightgrey)](docs/06-sandbox-windows.md)
 

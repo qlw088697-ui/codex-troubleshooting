@@ -16,6 +16,8 @@
 
 - English
   - [Home](README.en.md)
+  - [02 Login & auth](docs/02-login-auth.en.md)
+  - [04 config.toml](docs/04-config.en.md)
   - [Error quick reference](docs/08-errors-quickref.en.md)
 
 - 参与

@@ -1,6 +1,8 @@
 # 04 · config.toml 配置
 
 > 报错关键词：`failed to parse config`、`TOML parse error`、**「配置写了但不生效」**、401（配置冲突型）
+>
+> English version: [04-config.en.md](04-config.en.md)
 
 ## 文件位置
 

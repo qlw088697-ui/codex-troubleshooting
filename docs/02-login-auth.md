@@ -1,6 +1,8 @@
 # 02 · 登录与认证（401 / 403 高发区）
 
 > 报错关键词：`401 Unauthorized`、`Exceeded retry limit, last error: 401`、`403 Forbidden`、`Not logged in`、登录后一直无响应
+>
+> English version: [02-login-auth.en.md](02-login-auth.en.md)
 
 ## 两种认证方式，先分清你在用哪种
 
