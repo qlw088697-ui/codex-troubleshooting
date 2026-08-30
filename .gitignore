@@ -1,0 +1,19 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Local experiments（本仓库只放文档与脚本，不要把个人配置提交上来）
+*.log
+.env
+config.toml
+auth.json
