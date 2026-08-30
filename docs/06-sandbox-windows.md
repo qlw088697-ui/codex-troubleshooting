@@ -30,13 +30,26 @@ codex --dangerously-bypass-approvals-and-sandbox   # 全关，见下方风险提
 3. 写入目标在项目目录**外**（比如系统目录、用户主目录）也会被拒——把项目放到普通用户目录下，别放在受系统保护的位置；
 4. 需要装依赖、跑构建这类被拦的命令，在审批弹窗里批准即可；总是被拦的固定命令考虑调整策略而不是次次手点。
 
+### 每次启动都弹「信任此目录」（Trust this folder）
+
+新版本出于安全考虑不再默认信任目录，首次在某个目录使用会询问。弹窗反复出现的处理：
+
+1. 在提示里选择信任该目录，然后**重启会话**；
+2. 用 `/status` 确认信任状态与审批/沙箱模式已生效；
+3. VS Code 用户：同时把该文件夹在 VS Code 里设为 Trusted Workspace 并重载窗口——两边都信任后才不再重复询问；
+4. 仍每次都弹：升级到最新版，这个提示的持久化在不同版本间反复修过（参考 [openai/codex #14547](https://github.com/openai/codex/issues/14547)、[#14345](https://github.com/openai/codex/issues/14345)）。
+
+> 不要为了跳过提示就长期使用 `--dangerously-bypass-approvals-and-sandbox`——那是另一层风险（见上文）。
+
 ### Windows 原生版沙箱异常
 
 Windows 原生支持仍在持续完善，社区常见问题集中在沙箱实现上：
 
 - 升级到最新版再试（沙箱相关修复很频繁）；
 - 确认 PowerShell 执行策略没拦脚本（见 [01](01-installation.md)）；
-- 报错稳定复现且升级无效 → 走 WSL2 方案，兼容性最好。
+- 报错稳定复现且升级无效 → 走 WSL2 方案，兼容性最好；
+- 项目在 Windows 与 WSL 间共享时大量「文件被改坏 / 行尾报警」：加 `.gitattributes` 统一行尾（如 `* text=auto eol=lf`），避免 CRLF/LF 反复横跳；
+- 脚本、CI 里需要固定 shell 的：显式指定 shell，别依赖「默认 shell」——Windows 上默认 shell 随终端（PowerShell / cmd / Git Bash）不同而不同。
 
 ## WSL2 方案（社区最稳路径）
 
@@ -49,7 +62,7 @@ wsl --install
 
 1. **项目文件放在 WSL 文件系统里**（如 `~/projects/...`），不要放在 `/mnt/c/...`——跨文件系统 I/O 慢好几倍，权限行为也容易出怪问题；
 2. VS Code 用「WSL」扩展连入 WSL，再在 WSL 内运行 Codex，体验和原生一致；
-3. WSL 里的代理要单独配置（[03 网络与代理](03-network-proxy.md)），`127.0.0.1` 指向的是 WSL 自己；新版 WSL2 可用 mirrored 网络模式共享 Windows 侧代理，或在代理客户端里开启「允许局域网连接」并写 Windows 主机在 WSL 里的网关 IP。
+3. WSL 里的代理要单独配置（[03 网络与代理](03-network-proxy.md)），`127.0.0.1` 指向的是 WSL 自己；新版 WSL2 可用 mirrored 网络模式共享 Windows 侧代理，或在代理客户端里开启「允许局域网连接」并写 Windows 主机在 WSL 里的网关 IP。登录回调类问题（浏览器授权后凭据回不到 WSL）见 [02 的 WSL 小节](02-login-auth.md)。
 
 ## 什么时候才需要 `danger-full-access`
 

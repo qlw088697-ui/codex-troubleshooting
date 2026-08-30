@@ -71,9 +71,39 @@ Get-ChildItem Env: | Where-Object Name -like "*OPENAI*"   # PowerShell
 - 地区限制——部分服务/模型不对特定地区开放；
 - 企业/团队工作区策略限制。确认账号资格、换用你有权限的模型（`/model`）。
 
-## 登录回调失败 / 浏览器打不开
+## 登录回调失败 / 浏览器打不开：设备码登录
 
-远程 SSH、无图形界面、默认浏览器异常时，OAuth 回调会卡住。改用设备码登录（新版本支持，具体入口以 `codex login --help` 为准），在任意有浏览器的设备上完成授权。
+远程 SSH、无图形界面、默认浏览器异常时，OAuth 回调会卡住。此时用设备码登录，在任意有浏览器的设备上完成授权：
+
+```bash
+codex login --device-auth
+```
+
+设备码登录的三类报错：
+
+| 报错/现象 | 原因 | 处理 |
+|---|---|---|
+| 进不到输入设备码的页面，直接失败 | **设备码授权默认是关闭的** | 到 ChatGPT 网页 → Settings → Security，开启「Enable device code authorization for Codex」再重试 |
+| `token exchange failed` | 旧会话残留干扰 | 先 `codex logout`，再执行 `codex login --device-auth` |
+| `Invalid device code` | 码过期（有效期很短） | 重新运行命令生成新码，尽快输入 |
+
+> 实测参考：[openai/codex #25670](https://github.com/openai/codex/issues/25670)、[OpenAI 社区：token exchange failed](https://community.openai.com/t/codex-cli-desktop-auth-failed-with-token-exchange-failed/1385469)
+
+## WSL 里登录成功但凭据传不回来
+
+WSL 与 Windows 的 localhost 相互隔离：`codex login` 拉起的浏览器在 Windows 侧完成授权后，回调无法送达 WSL 里的 codex。按优先级处理：
+
+1. **新版 WSL2 开镜像网络模式**：Windows 用户目录 `.wslconfig` 里写 `networkingMode=mirrored` 后重启 WSL，localhost 打通后通常直接解决；
+2. **手动迁移凭据**：在 Windows 侧的 Codex 完成登录，然后把凭据复制进 WSL：
+   ```bash
+   # Windows 侧登录成功后，在 WSL 里执行（<Windows用户名> 按实际改）
+   mkdir -p ~/.codex
+   cp /mnt/c/Users/<Windows用户名>/.codex/auth.json ~/.codex/auth.json
+   ```
+   之后 WSL 里的 codex 即可使用订阅额度；token 过期后需重做一次；
+3. 仍不通：回 [03 网络与代理](03-network-proxy.md) 检查 WSL 的代理（WSL 里 `127.0.0.1` 指向的是 WSL 自己）。
+
+> 实测参考：[WSL 环境 Codex 登录问题完全解决方案 — CSDN](https://blog.csdn.net/gxy03/article/details/157246287)
 
 ## auth.json 是什么
 

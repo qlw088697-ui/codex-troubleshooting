@@ -28,6 +28,14 @@
 - WSL 用户推荐路径：装「WSL」扩展 → VS Code 连入 WSL → 在 WSL 内安装 CLI 和插件，行为与 Linux 一致；
 - 在插件里用 `/status`，和终端里的 `/status` 输出对比，差异点就是问题所在。
 
+### Windows 版选了 WSL agent 后进不去 / 崩溃
+
+Codex 的「在 WSL 中运行」开关状态保存在 `C:\Users\<你>\.codex\codex-global-state.json`：
+
+1. 完全退出 Codex / IDE；
+2. 编辑该文件，把 `runCodexInWindowsSubsystemForLinux` 改回 `false`（或直接删除该文件让应用重建默认值）；
+3. 把 Microsoft Store 里的 WSL 相关组件与扩展更新到最新再重启——旧版本组合有崩溃案例（参考 [openai/codex #13699](https://github.com/openai/codex/issues/13699)）。
+
 ### 代理：终端能用，插件不通
 
 IDE 启动的 codex 进程继承的是 **IDE 的环境**，不是你终端的环境：

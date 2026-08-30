@@ -71,6 +71,16 @@ git clone https://ghfast.top/https://github.com/openai/codex.git
 
 如果代理不方便，可以把 Codex 配置成走第三方 API 中转，见 [04 config.toml](04-config.md) 的 `model_providers` 配置。注意甄别中转站资质，API Key 不要发给不可信的第三方。
 
+## `stream disconnected before completion` 深挖
+
+这是社区上报量最大的单一条目之一。按命中率排查：
+
+1. **先分类**：偶发多为网络抖动，按上文配代理；稳定复现才继续往下；
+2. **项目在 OneDrive / 同步盘路径里**：同步盘的文件锁会干扰长会话的本地流式读写，把项目移出 OneDrive 再试（Windows 用户高频踩坑）；
+3. **超长会话**：上下文接近压缩（compaction）阈值时更容易断——开个新会话对比验证，长任务养成拆分会话的习惯（也省额度，见 [05](05-models-limits.md)）；
+4. **代理对 SSE 长连接不稳定**：换支持长连接的节点/客户端，TUN 模式通常比仅终端代理稳；
+5. **服务端侧**：`/backend-api/codex/responses` 的断流如与官方社区事故帖时间吻合，等修复即可——[参考帖子](https://community.openai.com/t/bug-codex-stream-disconnected-before-completion-on-backend-api-codex-responses-feb-8-2026/1373656)；走中转的用户检查 `wire_api` 配置（见 [04](04-config.md)）。
+
 ## 常见症状对照
 
 | 症状 | 大概率原因 | 处理 |

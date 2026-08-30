@@ -87,6 +87,8 @@ scripts/
 
 ## 如何贡献
 
+💬 只想提问、讨论？直接去 [Discussions](https://github.com/qlw088697-ui/codex-troubleshooting/discussions) 开帖，不必改文件。
+
 欢迎补充新的「症状 + 原因 + 解法」！请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，格式很简单，注意**脱敏**（不要贴 `auth.json`、API Key、真实邮箱）。
 
 ## 参考资源
@@ -98,6 +100,9 @@ scripts/
   - [Codex 报 401 / 无响应？99% 是这两个配置文件问题 — 知乎](https://zhuanlan.zhihu.com/p/2054216866801902921)
   - [Codex CLI 认证故障分层排查：401、403、浏览器回调与 429 — 腾讯云](https://cloud.tencent.com/developer/article/2713604)
   - [Windows 版 401、配置不生效排查 — 知乎](https://zhuanlan.zhihu.com/p/2052467135138490173)
+  - [Codex CLI Windows 避坑指南：从安装到沙箱报错 — 腾讯云](https://cloud.tencent.com/developer/article/2716156)
+  - [WSL 环境 Codex 登录问题完全解决方案 — CSDN](https://blog.csdn.net/gxy03/article/details/157246287)
+  - [官方社区：stream disconnected before completion](https://community.openai.com/t/bug-codex-stream-disconnected-before-completion-on-backend-api-codex-responses-feb-8-2026/1373656)
 
 ## License
 

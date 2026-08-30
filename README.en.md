@@ -63,6 +63,8 @@ index.html   docsify site (served via GitHub Pages)
 
 ## Contributing
 
+💬 Questions and discussions: [Discussions](https://github.com/qlw088697-ui/codex-troubleshooting/discussions).
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) (Chinese, short): paste the raw error (redacted), note your Codex version + OS, include a verification step. CI runs script syntax checks and relative-link checks on every PR.
 
 ## Links

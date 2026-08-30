@@ -36,6 +36,11 @@
 | Sandbox issues on Windows | Native support still maturing | [06](06-sandbox-windows.md), or use WSL2 |
 | MCP tools missing | Server failed to start (Windows `cmd /c` wrapper) | [07 MCP](07-mcp.md) |
 | 401 / config drift **inside VS Code / Cursor** | Shared `~/.codex` but stale IDE caches / env | [10 IDE](10-ide-vscode.md) |
+| Device-code login fails / `token exchange failed` | Device-code auth disabled by default | [02 device code](02-login-auth.md) |
+| WSL login credentials never arrive back | WSL ↔ Windows localhost isolation | [02 WSL section](02-login-auth.md) |
+| `stream disconnected before completion` | Network / OneDrive folder / very long session | [03 deep dive](03-network-proxy.md) |
+| "Trust this folder" prompt on every launch | Directory not trusted / version behavior | [06](06-sandbox-windows.md) |
+| Weekly limit reset date keeps moving | Rolling 7-day window, by design | [05](05-models-limits.md) |
 
 ## The five-step triage (cheat sheet)
 

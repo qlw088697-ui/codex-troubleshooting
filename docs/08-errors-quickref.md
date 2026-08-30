@@ -37,6 +37,12 @@
 | 写文件被拒 / 命令被拦截 | 沙箱正常工作，策略太严 | [06 沙箱与 Windows](06-sandbox-windows.md) |
 | Windows 沙箱异常 | 原生支持不完善 | [06](06-sandbox-windows.md)，或改用 WSL2 |
 | MCP 工具不出现 | server 没起来（Windows `cmd /c` 坑） | [07 MCP](07-mcp.md) |
+| 设备码登录失败 / `token exchange failed` | 设备码授权默认未开启 | [02](02-login-auth.md) 设备码小节 |
+| WSL 登录后凭据传不回去 | WSL 与 Windows localhost 隔离 | [02](02-login-auth.md) WSL 小节 |
+| `stream disconnected before completion` | 网络 / OneDrive 同步盘 / 超长会话 | [03](03-network-proxy.md) 深挖小节 |
+| 每次启动都弹「信任此目录」 | 目录未信任 / 版本行为 | [06](06-sandbox-windows.md) |
+| 每周限额重置时间一直变 | 滚动 7 天窗口，设计如此 | [05](05-models-limits.md) |
+| VS Code 选 WSL agent 后进不去 / 崩溃 | 全局状态文件 | [10](10-ide-vscode.md) |
 
 ## 通用排查五步法（速记）
 

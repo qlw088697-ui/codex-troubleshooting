@@ -18,6 +18,8 @@
 2. 确认额度不是被其他会话/其他设备共享消耗的（同一账号多处登录额度共享）；
 3. 长期不够用 → 升级套餐，或在限额窗口内改用 API Key 计费。
 
+> 💡 **每周限额是「滚动 7 天窗口」，不是自然周**——重置时间看起来每天往后「漂移」是设计如此，不是 bug。此外官方已提供弹性重置能力（可在 ChatGPT 侧按需触发限额重置，入口以产品为准）。参考：[社区讨论：weekly limit ran out](https://community.openai.com/t/weekly-limit-ran-out-even-though-i-never-hit-the-5-hour-limit/1376981)。
+
 **API Key（429）：**
 
 1. `insufficient_quota` → 账户余额/额度不足，去平台充值；
