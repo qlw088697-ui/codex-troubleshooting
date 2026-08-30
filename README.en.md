@@ -10,6 +10,8 @@ English | [中文](README.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20WSL-lightgrey)](docs/06-sandbox-windows.md)
 
+> 📖 **Read online**：<https://qlw088697-ui.github.io/codex-troubleshooting/> (docsify site with full-text search, kept in sync with this repo)
+
 ## Quick start: run the environment self-check first
 
 When anything misbehaves, start with the doctor script (read-only, changes nothing):
@@ -31,13 +33,14 @@ Guides are written in Chinese (commands and error strings are universal):
 | Symptom | Read |
 |---|---|
 | Install fails / `codex: command not found` / upgrade & rollback | [01 Installation](docs/01-installation.md) |
-| **401 Unauthorized** after successful login / `Exceeded retry limit` | [02 Login & auth](docs/02-login-auth.md) + [08 Quick reference](docs/08-errors-quickref.md) |
+| **401 Unauthorized** after successful login / `Exceeded retry limit` | [02 Login & auth](docs/02-login-auth.md) + [08 Quick reference (English)](docs/08-errors-quickref.en.md) |
 | 403 Forbidden | [02 Login & auth](docs/02-login-auth.md) |
 | 429 / "You've hit your usage limit" | [05 Models & limits](docs/05-models-limits.md) |
 | Timeouts / stream error / unreachable from some regions | [03 Network & proxy](docs/03-network-proxy.md) |
 | Custom relay endpoints / config not taking effect | [04 config.toml](docs/04-config.md) |
 | Sandbox blocks writes / Windows quirks / prefer WSL2 | [06 Sandbox & Windows](docs/06-sandbox-windows.md) |
 | MCP tools missing / server won't start | [07 MCP](docs/07-mcp.md) |
+| 401 / config drift inside VS Code / Cursor | [10 IDE integration](docs/10-ide-vscode.md) |
 | Cleanup / backup / migrate to a new machine / full reset | [09 Maintenance](docs/09-maintenance.md) |
 | Track new Codex releases | [Release tracker](docs/releases.md) (auto-updated weekly by CI) |
 
@@ -52,8 +55,9 @@ Guides are written in Chinese (commands and error strings are universal):
 ## Repo layout
 
 ```
-docs/        nine topic guides (Chinese) + releases.md (auto-generated release tracker)
+docs/        ten topic guides (Chinese) + English error quick reference + releases.md (auto tracker)
 scripts/     codex-doctor.ps1 / .sh (self-check), check-links.sh (CI), gen-releases.mjs (CI)
+index.html   docsify site (served via GitHub Pages)
 .github/     CI workflows & issue template
 ```
 

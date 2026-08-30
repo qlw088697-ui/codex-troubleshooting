@@ -10,6 +10,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20WSL-lightgrey)](docs/06-sandbox-windows.md)
 
+> 📖 **在线阅读**：<https://qlw088697-ui.github.io/codex-troubleshooting/>（支持全文搜索，内容与仓库同步）
+
 ---
 
 ## 这份手册能解决什么
@@ -46,6 +48,7 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 | 想用第三方中转 / 配置不生效 | [04 config.toml 配置](docs/04-config.md) |
 | Windows 写文件被拒 / 沙箱报错 / 想在 WSL 里跑 | [06 沙箱与 Windows](docs/06-sandbox-windows.md) |
 | MCP 工具不出现 / MCP server 启动失败 | [07 MCP 配置](docs/07-mcp.md) |
+| VS Code / Cursor 插件里 401、配置不生效 | [10 IDE 集成](docs/10-ide-vscode.md) |
 | 想清理 / 备份 / 迁移机器 / 完全重置 | [09 日常维护](docs/09-maintenance.md) |
 | 想看 Codex 出了哪些新版本 | [版本追踪](docs/releases.md)（CI 每周自动更新） |
 
@@ -61,7 +64,9 @@ docs/
 ├── 06-sandbox-windows.md   审批/沙箱模式、Windows 原生与 WSL2 方案
 ├── 07-mcp.md               MCP server 配置与排障
 ├── 08-errors-quickref.md   常见报错速查表（报错关键词 → 处理方案）
+├── 08-errors-quickref.en.md 英文版速查表
 ├── 09-maintenance.md       日常维护：升级、清理、备份、迁移、重置
+├── 10-ide-vscode.md        IDE 集成：VS Code / Cursor 插件排障
 └── releases.md             Codex 版本追踪（CI 每周自动生成）
 scripts/
 ├── codex-doctor.ps1        Windows 环境自检脚本

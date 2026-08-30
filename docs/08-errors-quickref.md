@@ -2,6 +2,8 @@
 
 > 用法：Ctrl+F 搜你终端里的报错关键词 → 按表跳详细文档。
 >
+> English version: [08-errors-quickref.en.md](08-errors-quickref.en.md)
+>
 > 先跑一次 [环境自检脚本](../scripts/codex-doctor.ps1)，它覆盖了本表里一半以上的检查项。
 
 ## 状态码先分清
