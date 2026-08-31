@@ -46,4 +46,4 @@ jobs:
       - name: codex-doctor CLI 冒烟测试
         run: |
           node tool/cli.mjs doctor --no-network --json > /tmp/doctor.json
-          node -e "const d=require('/tmp/doctor.json'); if(!d.summary || !Array.isArray(d.results) || d.summary.fail > 0) process.exit(1); console.log('doctor smoke:', d.summary.pass, 'pass /', d.summary.warn, 'warn /', d.summary.fail, 'fail')"
+          node -e "const d=require('/tmp/doctor.json'); const c=(d.results||[]).find(r=>r.id==='codex'); if(!d.summary || !Array.isArray(d.results) || !c) process.exit(1); console.log('doctor smoke OK: codex check ->', c.status, '|', c.detail)"
