@@ -1,6 +1,8 @@
 # 06 · 审批、沙箱与 Windows
 
 > 报错关键词：`sandbox`、`exec denied`、写入文件被拒、命令被拦截、Windows 下各种沙箱异常
+>
+> English version: [06-sandbox-windows.en.md](06-sandbox-windows.en.md)
 
 ## 两个核心概念
 

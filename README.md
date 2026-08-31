@@ -50,6 +50,7 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 | Windows 写文件被拒 / 沙箱报错 / 想在 WSL 里跑 | [06 沙箱与 Windows](docs/06-sandbox-windows.md) |
 | MCP 工具不出现 / MCP server 启动失败 | [07 MCP 配置](docs/07-mcp.md) |
 | VS Code / Cursor 插件里 401、配置不生效 | [10 IDE 集成](docs/10-ide-vscode.md) |
+| 想把 Codex 用得更快更省（命令 / 项目记忆 / 脚本化） | [11 效率技巧](docs/11-tips.md) |
 | 想清理 / 备份 / 迁移机器 / 完全重置 | [09 日常维护](docs/09-maintenance.md) |
 | 想看 Codex 出了哪些新版本 | [版本追踪](docs/releases.md)（CI 每周自动更新） |
 
@@ -63,11 +64,13 @@ docs/
 ├── 04-config.md            config.toml：根级键位置、第三方中转、profiles
 ├── 05-models-limits.md     模型选择与用量限额（429）
 ├── 06-sandbox-windows.md   审批/沙箱模式、Windows 原生与 WSL2 方案
+├── 06-sandbox-windows.en.md 英文版：沙箱与 Windows
 ├── 07-mcp.md               MCP server 配置与排障
 ├── 08-errors-quickref.md   常见报错速查表（报错关键词 → 处理方案）
 ├── 08-errors-quickref.en.md 英文版速查表
 ├── 09-maintenance.md       日常维护：升级、清理、备份、迁移、重置
 ├── 10-ide-vscode.md        IDE 集成：VS Code / Cursor 插件排障
+├── 11-tips.md              效率技巧：斜杠命令、AGENTS.md 项目记忆、codex exec
 └── releases.md             Codex 版本追踪（CI 每周自动生成）
 scripts/
 ├── codex-doctor.ps1        Windows 环境自检脚本

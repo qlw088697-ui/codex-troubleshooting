@@ -39,7 +39,7 @@ Guides are written in Chinese (commands and error strings are universal):
 | 429 / "You've hit your usage limit" | [05 Models & limits](docs/05-models-limits.md) |
 | Timeouts / stream error / unreachable from some regions | [03 Network & proxy](docs/03-network-proxy.md) |
 | Custom relay endpoints / config not taking effect | [04 config.toml (English)](docs/04-config.en.md) |
-| Sandbox blocks writes / Windows quirks / prefer WSL2 | [06 Sandbox & Windows](docs/06-sandbox-windows.md) |
+| Sandbox blocks writes / Windows quirks / prefer WSL2 | [06 Sandbox & Windows (English)](docs/06-sandbox-windows.en.md) |
 | MCP tools missing / server won't start | [07 MCP](docs/07-mcp.md) |
 | 401 / config drift inside VS Code / Cursor | [10 IDE integration](docs/10-ide-vscode.md) |
 | Cleanup / backup / migrate to a new machine / full reset | [09 Maintenance](docs/09-maintenance.md) |
@@ -56,8 +56,8 @@ Guides are written in Chinese (commands and error strings are universal):
 ## Repo layout
 
 ```
-docs/        ten topic guides (Chinese; 02 & 04 also in English) + English error quick reference + releases.md (auto tracker)
-scripts/     codex-doctor.ps1 / .sh (self-check), check-links.sh (CI), gen-releases.mjs (CI)
+docs/        eleven topic guides (Chinese; 02, 04 & 06 also in English) + English error quick reference + releases.md (auto tracker)
+scripts/     codex-doctor.ps1 / .sh (self-check), check-links.sh & check-consistency.sh (CI), gen-releases.mjs (CI)
 index.html   docsify site (served via GitHub Pages)
 AGENTS.md    contribution guide for AI coding agents
 .github/     CI workflows & issue template

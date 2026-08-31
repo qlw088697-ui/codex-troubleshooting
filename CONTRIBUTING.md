@@ -47,6 +47,7 @@
 每个 PR 会自动跑（见 `.github/workflows/ci.yml`）：
 
 1. 自检脚本与工具脚本的语法检查（bash / PowerShell / Node）；
-2. Markdown 相对链接检查（`scripts/check-links.sh`）——改文件名、挪文档时务必本地跑一遍。
+2. Markdown 相对链接检查（`scripts/check-links.sh`）——改文件名、挪文档时务必本地跑一遍；
+3. 结构一致性检查（`scripts/check-consistency.sh`）——新文档必须登记进 `_sidebar.md`，中英配对文档必须互相链接。
 
 另有每周定时任务：外链存活检查（`link-check.yml`）和 Codex 版本追踪更新（`track-releases.yml`，运行 `scripts/gen-releases.mjs` 重新生成 `docs/releases.md`，有变化才自动提交）。

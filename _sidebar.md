@@ -12,12 +12,14 @@
     - [英文版速查](docs/08-errors-quickref.en.md)
   - [09 日常维护](docs/09-maintenance.md)
   - [10 IDE 集成](docs/10-ide-vscode.md)
+  - [11 效率技巧](docs/11-tips.md)
   - [版本追踪](docs/releases.md)
 
 - English
   - [Home](README.en.md)
   - [02 Login & auth](docs/02-login-auth.en.md)
   - [04 config.toml](docs/04-config.en.md)
+  - [06 Sandbox & Windows](docs/06-sandbox-windows.en.md)
   - [Error quick reference](docs/08-errors-quickref.en.md)
 
 - 参与
