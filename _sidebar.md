@@ -17,10 +17,17 @@
 
 - English
   - [Home](README.en.md)
+  - [01 Installation](docs/01-installation.en.md)
   - [02 Login & auth](docs/02-login-auth.en.md)
+  - [03 Network & proxy](docs/03-network-proxy.en.md)
   - [04 config.toml](docs/04-config.en.md)
+  - [05 Models & limits](docs/05-models-limits.en.md)
   - [06 Sandbox & Windows](docs/06-sandbox-windows.en.md)
-  - [Error quick reference](docs/08-errors-quickref.en.md)
+  - [07 MCP](docs/07-mcp.en.md)
+  - [08 Error quick reference](docs/08-errors-quickref.en.md)
+  - [09 Maintenance](docs/09-maintenance.en.md)
+  - [10 IDE integration](docs/10-ide-vscode.en.md)
+  - [11 Efficiency tips](docs/11-tips.en.md)
 
 - 参与
   - [贡献指南](CONTRIBUTING.md)

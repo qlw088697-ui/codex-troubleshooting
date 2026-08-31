@@ -1,6 +1,8 @@
 # 10 · IDE 集成（VS Code / Cursor）
 
 > 关键词：插件装不上、插件里 401、插件配置不生效、插件和终端行为不一致
+>
+> English version: [10-ide-vscode.en.md](10-ide-vscode.en.md)
 
 ## 先搞清架构，排障不走弯路
 

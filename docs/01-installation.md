@@ -1,6 +1,8 @@
 # 01 · 安装、更新与回滚
 
 > 适用：Windows / macOS / Linux / WSL。报错关键词：`command not found`、`codex 不是内部或外部命令`、`EACCES`、`EPERM`、`ERR_SOCKET_TIMEOUT`
+>
+> English version: [01-installation.en.md](01-installation.en.md)
 
 ## 三种安装方式
 

@@ -1,6 +1,8 @@
 # 07 · MCP 配置与排障
 
 > 报错关键词：MCP 工具不出现、`mcp server` 启动失败、工具调用超时
+>
+> English version: [07-mcp.en.md](07-mcp.en.md)
 
 ## 基本配置
 

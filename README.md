@@ -7,6 +7,7 @@
 > A Chinese-first troubleshooting & maintenance guide for OpenAI Codex CLI.
 
 [![CI](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml/badge.svg)](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/qlw088697-ui/codex-troubleshooting?label=release)](https://github.com/qlw088697-ui/codex-troubleshooting/releases)
 [![Latest Codex](https://img.shields.io/github/v/release/openai/codex?label=latest%20codex)](docs/releases.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20WSL-lightgrey)](docs/06-sandbox-windows.md)
@@ -64,14 +65,14 @@ docs/
 ├── 04-config.md            config.toml：根级键位置、第三方中转、profiles
 ├── 05-models-limits.md     模型选择与用量限额（429）
 ├── 06-sandbox-windows.md   审批/沙箱模式、Windows 原生与 WSL2 方案
-├── 06-sandbox-windows.en.md 英文版：沙箱与 Windows
 ├── 07-mcp.md               MCP server 配置与排障
 ├── 08-errors-quickref.md   常见报错速查表（报错关键词 → 处理方案）
-├── 08-errors-quickref.en.md 英文版速查表
 ├── 09-maintenance.md       日常维护：升级、清理、备份、迁移、重置
 ├── 10-ide-vscode.md        IDE 集成：VS Code / Cursor 插件排障
 ├── 11-tips.md              效率技巧：斜杠命令、AGENTS.md 项目记忆、codex exec
 └── releases.md             Codex 版本追踪（CI 每周自动生成）
+
+> 🌍 所有主题文档均有英文版（`docs/*.en.md`，共 11 篇 + 双语速查表），目录树不一一列出；中英版本在文首互链。
 scripts/
 ├── codex-doctor.ps1        Windows 环境自检脚本
 ├── codex-doctor.sh         macOS / Linux / WSL 环境自检脚本

@@ -1,6 +1,8 @@
 # 05 · 模型与用量限额
 
 > 报错关键词：`429`、`You've hit your usage limit`、`rate limit`、`insufficient_quota`、`model_not_found`
+>
+> English version: [05-models-limits.en.md](05-models-limits.en.md)
 
 ## 先分清两种计费，限额逻辑完全不同
 

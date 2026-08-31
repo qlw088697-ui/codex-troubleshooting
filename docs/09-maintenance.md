@@ -1,6 +1,8 @@
 # 09 · 日常维护：升级、清理、备份、迁移、重置
 
 > 面向长期使用 Codex 的用户：把这几件例行操作流程化，出问题时能快速恢复。
+>
+> English version: [09-maintenance.en.md](09-maintenance.en.md)
 
 ## `~/.codex` 目录导览
 

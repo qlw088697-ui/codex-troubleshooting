@@ -3,6 +3,8 @@
 > 报错关键词：`stream error`、`stream disconnected`、`connection reset`、`ETIMEDOUT`、`ECONNREFUSED`、长时间转圈无响应
 >
 > 典型人群：国内网络直连用户、公司内网/企业代理用户。
+>
+> English version: [03-network-proxy.en.md](03-network-proxy.en.md)
 
 ## 核心认知
 

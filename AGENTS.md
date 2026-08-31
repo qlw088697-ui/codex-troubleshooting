@@ -6,7 +6,7 @@
 
 - `docs/NN-*.md`：主题文档，两位序号决定顺序；新增主题接续编号
 - `docs/08-errors-quickref.md` / `08-errors-quickref.en.md`：报错速查表（中/英）——**新案例必须同步进两份速查表**
-- `docs/02-login-auth.en.md`、`docs/04-config.en.md`：英文版文档，与中文版结构保持一致，两边同步改
+- `docs/*.en.md`：英文版文档——**每篇主题文档都有英文版**，与中文版结构保持一致，两边同步改（CI 的结构一致性检查会强制校验互链）
 - `scripts/`：自检与工具脚本；改动后必须保证 `bash -n`（.sh）、`node --check`（.mjs）、PowerShell 解析（.ps1）通过
 - `_sidebar.md`：站点导航，新增文档必须登记
 - `index.html` + `.nojekyll`：docsify 站点（GitHub Pages），不要改动整体结构
