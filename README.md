@@ -38,6 +38,17 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 
 （也可以下载 `scripts/` 目录里的脚本本地运行。脚本只读环境信息，不会修改任何配置。）
 
+## 🛠️ 配套工具：codex-doctor CLI
+
+把本手册的检查与维护做成了一条条命令（零依赖，Node 18.15+）：
+
+```bash
+npx github:qlw088697-ui/codex-troubleshooting doctor      # 环境自检
+npx github:qlw088697-ui/codex-troubleshooting --help      # 查看全部命令
+```
+
+环境自检、会话/日志归档（预演制）、配置与凭据备份恢复、版本追踪——详见 [13 · codex-doctor CLI](docs/13-codex-doctor.md)。
+
 ## 症状速查导航
 
 | 我遇到的症状 | 应该看 |
@@ -53,6 +64,7 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 | VS Code / Cursor 插件里 401、配置不生效 | [10 IDE 集成](docs/10-ide-vscode.md) |
 | 想把 Codex 用得更快更省（命令 / 项目记忆 / 脚本化） | [11 效率技巧](docs/11-tips.md) |
 | 想看完整实战：从零用 Codex 做一个项目 | [12 实战演练](docs/12-walkthrough.md) |
+| 想要一条命令完成自检/清理/备份 | [13 codex-doctor CLI](docs/13-codex-doctor.md) |
 | 想清理 / 备份 / 迁移机器 / 完全重置 | [09 日常维护](docs/09-maintenance.md) |
 | 想看 Codex 出了哪些新版本 | [版本追踪](docs/releases.md)（CI 每周自动更新） |
 
@@ -72,14 +84,18 @@ docs/
 ├── 10-ide-vscode.md        IDE 集成：VS Code / Cursor 插件排障
 ├── 11-tips.md              效率技巧：斜杠命令、AGENTS.md 项目记忆、codex exec
 ├── 12-walkthrough.md       实战演练：从零用 Codex 搭一个项目
+├── 13-codex-doctor.md      codex-doctor CLI 使用手册
 └── releases.md             Codex 版本追踪（CI 每天自动生成）
 
-> 🌍 所有主题文档均有英文版（`docs/*.en.md`，共 12 篇），目录树不一一列出；中英版本在文首互链。
+> 🌍 所有主题文档均有英文版（`docs/*.en.md`，共 13 篇），目录树不一一列出；中英版本在文首互链。
 scripts/
 ├── codex-doctor.ps1        Windows 环境自检脚本
 ├── codex-doctor.sh         macOS / Linux / WSL 环境自检脚本
 ├── check-links.sh          Markdown 相对链接检查（CI 同款）
-└── gen-releases.mjs        版本追踪生成器（CI 每周运行）
+├── check-consistency.sh    结构一致性检查（CI 同款）
+└── gen-releases.mjs        版本追踪生成器（CI 每天运行）
+tool/
+└── cli.mjs 等              codex-doctor CLI（零依赖 Node 维护工具，见 docs/13）
 ```
 
 ## 通用排查五步法

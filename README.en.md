@@ -28,6 +28,8 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 irm https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/main/scripts/codex-doctor.ps1 | iex
 ```
 
+Prefer a CLI? `npx github:qlw088697-ui/codex-troubleshooting doctor` — zero-dependency, with cleanup/backup/version commands too. See [13 codex-doctor CLI](docs/13-codex-doctor.en.md).
+
 ## Symptom → doc map
 
 Guides are written in Chinese (commands and error strings are universal):
@@ -45,6 +47,7 @@ Guides are written in Chinese (commands and error strings are universal):
 | 401 / config drift inside VS Code / Cursor | [10 IDE integration](docs/10-ide-vscode.en.md) |
 | Use Codex faster & cheaper (commands / project memory / scripting) | [11 Efficiency tips](docs/11-tips.en.md) |
 | Full walkthrough: build a project from scratch with Codex | [12 Walkthrough](docs/12-walkthrough.en.md) |
+| Want one command for checks / cleanup / backups | [13 codex-doctor CLI](docs/13-codex-doctor.en.md) |
 | Cleanup / backup / migrate to a new machine / full reset | [09 Maintenance](docs/09-maintenance.en.md) |
 | Track new Codex releases | [Release tracker](docs/releases.md) (auto-updated weekly by CI) |
 
@@ -59,8 +62,9 @@ Guides are written in Chinese (commands and error strings are universal):
 ## Repo layout
 
 ```
-docs/        twelve topic guides, fully bilingual (中文 + English) + releases.md (auto tracker)
-scripts/     codex-doctor.ps1 / .sh (self-check), check-links.sh & check-consistency.sh (CI), gen-releases.mjs (CI)
+docs/        thirteen topic guides, fully bilingual (中文 + English) + releases.md (auto tracker)
+scripts/     standalone self-check scripts (ps1/sh) + CI checkers + release-tracker generator
+tool/        codex-doctor CLI — zero-dependency maintenance tool (doctor / clean / backup / restore / versions)
 index.html   docsify site (served via GitHub Pages)
 AGENTS.md    contribution guide for AI coding agents
 .github/     CI workflows & issue template

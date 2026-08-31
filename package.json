@@ -1,0 +1,23 @@
+{
+  "name": "codex-doctor-cli",
+  "version": "0.1.0",
+  "description": "Codex CLI 维护与排障工具：环境自检、会话/日志归档、配置与凭据备份恢复、版本追踪（零依赖）",
+  "type": "module",
+  "bin": {
+    "codex-doctor": "tool/cli.mjs"
+  },
+  "files": [
+    "tool",
+    "docs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.15"
+  },
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qlw088697-ui/codex-troubleshooting.git"
+  }
+}

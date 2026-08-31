@@ -33,10 +33,17 @@ jobs:
           Write-Host 'codex-doctor.ps1 解析通过'
 
       - name: Node 脚本语法检查
-        run: node --check scripts/gen-releases.mjs
+        run: |
+          node --check scripts/gen-releases.mjs
+          for f in tool/*.mjs; do node --check "$f"; done
 
       - name: Markdown 相对链接检查
         run: bash scripts/check-links.sh
 
       - name: 结构一致性检查
         run: bash scripts/check-consistency.sh
+
+      - name: codex-doctor CLI 冒烟测试
+        run: |
+          node tool/cli.mjs doctor --no-network --json > /tmp/doctor.json
+          node -e "const d=require('/tmp/doctor.json'); if(!d.summary || !Array.isArray(d.results) || d.summary.fail > 0) process.exit(1); console.log('doctor smoke:', d.summary.pass, 'pass /', d.summary.warn, 'warn /', d.summary.fail, 'fail')"
