@@ -84,6 +84,26 @@ if [ -n "$FREE_KB" ]; then
   else warn "HOME 所在分区仅剩约 ${FREE_GB} GB，空间不足可能引发各种诡异问题"; fi
 fi
 
+# ---------- 7. 已知坑位（2026 高频案例） ----------
+section "已知坑位（2026 高频案例）"
+if grep -qi microsoft /proc/version 2>/dev/null; then
+  ok "运行在 WSL 内"
+  if [ ! -f "$CODEX_DIR/auth.json" ]; then
+    WIN_AUTH="$(ls /mnt/c/Users/*/.codex/auth.json 2>/dev/null | head -1)"
+    if [ -n "$WIN_AUTH" ]; then
+      warn "WSL 内未登录，但检测到 Windows 侧凭据 —— 可复制到 ~/.codex/auth.json，见 docs/02 WSL 小节"
+    fi
+  fi
+fi
+if [ -d "$CODEX_DIR/sessions" ]; then
+  SESS_MB="$(du -sm "$CODEX_DIR/sessions" 2>/dev/null | awk '{print $1}')"
+  if [ -n "$SESS_MB" ] && [ "$SESS_MB" -ge 500 ]; then
+    warn "sessions 目录约 ${SESS_MB} MB —— 会话历史可按 docs/09 清理归档"
+  elif [ -n "$SESS_MB" ]; then
+    ok "sessions 目录约 ${SESS_MB} MB"
+  fi
+fi
+
 # ---------- 汇总 ----------
 printf "\n======== 汇总 ========\n"
 echo "通过 $PASS   警告 $WARN   失败 $FAIL"

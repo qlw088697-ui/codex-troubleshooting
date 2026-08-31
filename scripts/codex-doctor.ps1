@@ -102,6 +102,39 @@ if ($c) {
     if ($freeGB -ge 5) { Ok ("C 盘剩余 {0} GB" -f $freeGB) } else { Warn ("C 盘仅剩 {0} GB，空间不足可能引发各种诡异问题" -f $freeGB) }
 }
 
+# ---------- 7. 已知坑位（2026 高频案例） ----------
+Section "已知坑位（2026 高频案例）"
+$oneDrive = [Environment]::GetEnvironmentVariable('OneDrive')
+if ($oneDrive) {
+    $codexUnderOd = $codexDir -like ($oneDrive + '*')
+    $cwdUnderOd   = (Get-Location).Path -like ($oneDrive + '*')
+    if ($codexUnderOd) {
+        Bad "~/.codex 在 OneDrive 同步范围内（$oneDrive）—— 凭据/配置被同步盘接管，务必移出，见 docs/09"
+    } elseif ($cwdUnderOd) {
+        Warn "当前目录在 OneDrive 内 —— 同步盘文件锁是 stream disconnected 的高发原因，见 docs/03 深挖小节"
+    } else {
+        Write-Host "  [--]  OneDrive 存在（$oneDrive）：项目与 ~/.codex 请勿放入其中，见 docs/03"
+    }
+}
+$gs = Join-Path $codexDir "codex-global-state.json"
+if (Test-Path $gs) {
+    $wsl = $null
+    try { $wsl = (Get-Content $gs -Raw | ConvertFrom-Json).runCodexInWindowsSubsystemForLinux } catch {}
+    if ($wsl -eq $true) {
+        Warn "runCodexInWindowsSubsystemForLinux=true（CLI 跑在 WSL 中）；若 IDE 进不去或崩溃，改回 false，见 docs/10"
+    } else {
+        Ok "codex-global-state.json 正常（未启用 WSL 运行模式）"
+    }
+}
+$sess = Join-Path $codexDir "sessions"
+if (Test-Path $sess) {
+    $sum = (Get-ChildItem $sess -Recurse -File -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum
+    if (-not $sum) { $sum = 0 }
+    $mb = [math]::Round($sum / 1MB, 1)
+    if ($mb -ge 500) { Warn ("sessions 目录约 {0} MB —— 会话历史可按 docs/09 清理归档" -f $mb) }
+    else { Ok ("sessions 目录约 {0} MB" -f $mb) }
+}
+
 # ---------- 汇总 ----------
 Write-Host "`n======== 汇总 ========" -F Cyan
 Write-Host ("通过 {0}   警告 {1}   失败 {2}" -f $script:Pass, $script:Warn, $script:Fail)
