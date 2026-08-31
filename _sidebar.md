@@ -13,6 +13,7 @@
   - [09 日常维护](docs/09-maintenance.md)
   - [10 IDE 集成](docs/10-ide-vscode.md)
   - [11 效率技巧](docs/11-tips.md)
+  - [12 实战演练](docs/12-walkthrough.md)
   - [版本追踪](docs/releases.md)
 
 - English
@@ -28,6 +29,7 @@
   - [09 Maintenance](docs/09-maintenance.en.md)
   - [10 IDE integration](docs/10-ide-vscode.en.md)
   - [11 Efficiency tips](docs/11-tips.en.md)
+  - [12 Walkthrough](docs/12-walkthrough.en.md)
 
 - 参与
   - [贡献指南](CONTRIBUTING.md)

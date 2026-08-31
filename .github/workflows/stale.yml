@@ -1,0 +1,28 @@
+# 长期不活动的 Issue / PR 自动标记与关闭
+name: 不活动清理
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # 每天 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 30
+          days-before-close: 14
+          stale-issue-message: '这条 Issue 30 天没有活动，已被标记为过期。如有新信息（新版本号、新的报错现场）请回复，否则 14 天后将自动关闭。'
+          stale-pr-message: '这个 PR 30 天没有活动，已被标记为过期。请 rebase / 更新后回复，否则 14 天后将自动关闭。'
+          close-issue-message: '因长期无活动自动关闭。问题仍在的话欢迎重新打开并补充最新环境信息。'
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
+          exempt-issue-labels: 'pinned,keep,good-first-issue'
+          exempt-pr-labels: 'keep'
+          operations-per-run: 60

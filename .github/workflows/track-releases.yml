@@ -3,7 +3,7 @@ name: 版本追踪
 
 on:
   schedule:
-    - cron: '0 3 * * 1' # 每周一 03:00 UTC
+    - cron: '0 3 * * *' # 每天 03:00 UTC（Codex 发版频繁，日更追踪）
   workflow_dispatch:
   push:
     branches: [main]

@@ -44,6 +44,7 @@ Guides are written in Chinese (commands and error strings are universal):
 | MCP tools missing / server won't start | [07 MCP](docs/07-mcp.en.md) |
 | 401 / config drift inside VS Code / Cursor | [10 IDE integration](docs/10-ide-vscode.en.md) |
 | Use Codex faster & cheaper (commands / project memory / scripting) | [11 Efficiency tips](docs/11-tips.en.md) |
+| Full walkthrough: build a project from scratch with Codex | [12 Walkthrough](docs/12-walkthrough.en.md) |
 | Cleanup / backup / migrate to a new machine / full reset | [09 Maintenance](docs/09-maintenance.en.md) |
 | Track new Codex releases | [Release tracker](docs/releases.md) (auto-updated weekly by CI) |
 
@@ -58,7 +59,7 @@ Guides are written in Chinese (commands and error strings are universal):
 ## Repo layout
 
 ```
-docs/        eleven topic guides, fully bilingual (中文 + English) + releases.md (auto tracker)
+docs/        twelve topic guides, fully bilingual (中文 + English) + releases.md (auto tracker)
 scripts/     codex-doctor.ps1 / .sh (self-check), check-links.sh & check-consistency.sh (CI), gen-releases.mjs (CI)
 index.html   docsify site (served via GitHub Pages)
 AGENTS.md    contribution guide for AI coding agents
