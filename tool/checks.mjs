@@ -1,5 +1,5 @@
 // doctor 自检：与 scripts/codex-doctor.ps1/.sh 检查项一致，跨平台单一实现
-import { execFileSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { HOME, CODEX_DIR, exists, dirBytes } from './util.mjs';
@@ -60,6 +60,17 @@ function runShell(cmdString) {
     }).trim();
   } catch {
     return null;
+  }
+}
+
+function commandExists(cmd) {
+  if (/[\\\/]/.test(cmd)) return exists(cmd);
+  const check = process.platform === 'win32' ? `where ${cmd}` : `command -v ${cmd}`;
+  try {
+    execSync(check, { stdio: 'ignore', shell: true, timeout: 8000 });
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -143,6 +154,35 @@ export async function collectChecks({ network = true } = {}) {
     } else {
       add('config-roots', 'ok', '未发现根级键位置问题');
     }
+    // MCP server 命令可达性（「工具不出现」的头号原因就是命令起不来）
+    const mcpCmds = [];
+    let inMcp = false;
+    let mcpName = null;
+    for (const raw of content.split(/\r?\n/)) {
+      const l = raw.trim();
+      const tm = l.match(/^\[([^\]]+)\]$/);
+      if (tm) {
+        const n = tm[1].trim();
+        inMcp = n.startsWith('mcp_servers.') && n.split('.').length === 2;
+        mcpName = inMcp ? n.replace('mcp_servers.', '') : null;
+        continue;
+      }
+      if (!inMcp || !l || l.startsWith('#')) continue;
+      const cm = l.match(/^command\s*=\s*["']([^"']+)["']/);
+      if (cm && mcpName && mcpCmds.length < 5) mcpCmds.push({ name: mcpName, cmd: cm[1] });
+    }
+    if (mcpCmds.length > 0) {
+      const missing = mcpCmds.filter((x) => !commandExists(x.cmd));
+      add(
+        'mcp',
+        missing.length === 0 ? 'ok' : 'fail',
+        missing.length === 0
+          ? `${mcpCmds.length} 个 MCP server 的启动命令均可解析`
+          : `MCP 启动命令不可解析: ${missing.map((x) => `${x.name}(${x.cmd})`).join(', ')}`,
+        'docs/07-mcp.md'
+      );
+    }
+
     if (/^\[model_providers\./m.test(content)) {
       add('providers', 'warn', '检测到第三方 provider 配置——用官方账号报 401 时先核对它', 'docs/04-config.md');
       // 提取第一个中转 base_url（供网络探测感知中转模式）

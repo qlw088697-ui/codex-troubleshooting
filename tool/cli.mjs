@@ -8,7 +8,7 @@ import { configSummary } from './config.mjs';
 import { CODEX_DIR } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.0.0';
+const VERSION = '0.10.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
