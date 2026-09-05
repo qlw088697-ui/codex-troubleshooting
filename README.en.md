@@ -7,7 +7,8 @@ English | [中文](README.md)
 > **Every topic guide is available in English** — the map below links straight to the English versions; each one cross-links back to the Chinese original.
 
 [![CI](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml/badge.svg)](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml)
-[![Latest release](https://img.shields.io/github/v/release/qlw088697-ui/codex-troubleshooting?label=release)](https://github.com/qlw088697-ui/codex-troubleshooting/releases)
+[![npm](https://img.shields.io/npm/v/@qqq123456789/codex-doctor)](https://www.npmjs.com/package/@qqq123456789/codex-doctor)
+[![Latest release](https://img.shields.io/npm/v/@qqq123456789/codex-doctor?label=release)](https://www.npmjs.com/package/@qqq123456789/codex-doctor)
 [![Latest Codex](https://img.shields.io/github/v/release/openai/codex?label=latest%20codex)](docs/releases.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20WSL-lightgrey)](docs/06-sandbox-windows.md)

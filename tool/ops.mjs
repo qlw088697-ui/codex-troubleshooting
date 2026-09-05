@@ -159,20 +159,20 @@ function compareSemver(a, b) {
 }
 
 export async function checkUpdate(currentVersion) {
-  const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'codex-doctor-cli' };
-  if (process.env.GH_TOKEN) headers.Authorization = `Bearer ${process.env.GH_TOKEN}`;
-  const res = await fetch('https://api.github.com/repos/qlw088697-ui/codex-troubleshooting/releases/latest', { headers });
-  if (!res.ok) throw new Error(`GitHub API HTTP ${res.status}`);
+  // 与 npm registry 上的包版本对比（仓库 GitHub release 版本号与本工具版本号不同步）
+  const res = await fetch('https://registry.npmjs.org/@qqq123456789%2Fcodex-doctor/latest', {
+    headers: { Accept: 'application/vnd.npm.install-v1+json', 'User-Agent': 'codex-doctor-cli' },
+  });
+  if (!res.ok) throw new Error(`npm registry HTTP ${res.status}`);
   const r = await res.json();
-  const tag = r.tag_name || '';
-  const latest = tag.replace(/^v/, '');
+  const latest = r.version || '';
   const newer = latest ? compareSemver(currentVersion, latest) < 0 : false;
   return {
     lines: [
       `当前工具版本: ${currentVersion}`,
-      `仓库最新发布: ${tag}（${(r.published_at || '').slice(0, 10)}）`,
+      `npm 最新版本: ${latest}`,
       newer
-        ? 'npx 直跑始终使用最新代码，无需操作；本地克隆请 git pull 后重跑。'
+        ? 'npx 直跑始终使用最新代码，无需操作；全局安装用户请执行 npm install -g @qqq123456789/codex-doctor@latest'
         : '已是最新版本。',
     ],
   };

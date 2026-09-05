@@ -179,6 +179,29 @@ export async function collectChecks({ network = true } = {}) {
     'docs/02-login-auth.md'
   );
 
+  // 4b. 登录态有效期（解码 auth.json 中 id_token 的 exp 声明，不输出任何敏感内容）
+  if (exists(auth)) {
+    try {
+      const j = JSON.parse(fs.readFileSync(auth, 'utf8'));
+      const idToken = j?.tokens?.id_token;
+      if (typeof idToken === 'string' && idToken.split('.').length >= 2) {
+        const payload = JSON.parse(Buffer.from(idToken.split('.')[1], 'base64url').toString('utf8'));
+        if (typeof payload?.exp === 'number') {
+          const days = Math.floor((payload.exp * 1000 - Date.now()) / 86400e3);
+          if (days < 0) {
+            add('auth-expiry', 'warn', `登录态已过期 ${-days} 天——重新 codex login 即可`, 'docs/02-login-auth.md');
+          } else if (days <= 7) {
+            add('auth-expiry', 'warn', `登录态将于 ${days} 天内过期——建议尽快 codex login 刷新`, 'docs/02-login-auth.md');
+          } else {
+            add('auth-expiry', 'ok', `登录态剩余约 ${days} 天`);
+          }
+        }
+      }
+    } catch {
+      /* auth.json 结构不符或解析失败则静默跳过 */
+    }
+  }
+
   // 5. 环境变量
   if (process.env.OPENAI_API_KEY) add('env-key', 'ok', 'OPENAI_API_KEY 已设置（值不显示）');
   else add('env-key', 'info', 'OPENAI_API_KEY 未设置（ChatGPT 登录方式无需设置）');
