@@ -19,6 +19,7 @@ jobs:
           bash -n scripts/codex-doctor.sh
           bash -n scripts/check-links.sh
           bash -n scripts/check-consistency.sh
+          bash -n scripts/test-codex-doctor.sh
 
       - name: PowerShell 脚本解析检查
         shell: pwsh
@@ -45,5 +46,9 @@ jobs:
 
       - name: codex-doctor CLI 冒烟测试
         run: |
-          node tool/cli.mjs doctor --no-network --json > /tmp/doctor.json
+          # runner 上没有 codex，doctor 会正确报告 fail 并以非零退出——属预期，故 || true
+          node tool/cli.mjs doctor --no-network --json > /tmp/doctor.json || true
           node -e "const d=require('/tmp/doctor.json'); const c=(d.results||[]).find(r=>r.id==='codex'); if(!d.summary || !Array.isArray(d.results) || !c) process.exit(1); console.log('doctor smoke OK: codex check ->', c.status, '|', c.detail)"
+
+      - name: codex-doctor CLI 夹具测试
+        run: bash scripts/test-codex-doctor.sh
