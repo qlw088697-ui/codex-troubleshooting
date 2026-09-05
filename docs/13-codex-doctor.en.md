@@ -19,7 +19,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 
 | Command | Purpose | Risk |
 |---|---|---|
-| `doctor` | Full environment check (codex outdated-version detection, Windows execution policy, OneDrive pitfalls; `--no-network` skips probes, `--json` for scripts, `--strict` fails on warnings) | read-only |
+| `doctor` | Full environment check (**relay-aware**: probes your configured relay endpoint instead of official ones; codex outdated-version detection, Windows execution policy & system proxy, OneDrive pitfalls; `--no-network` skips probes, `--json` for scripts, `--strict` fails on warnings) | read-only |
 | `clean sessions [--days 30]` | Archive session files older than N days (**dry-run by default**, `--yes` to execute) | low (archive, not delete) |
 | `clean logs [--days 14]` | Same, for logs | low |
 | `backup [--out DIR]` | Back up config.toml + auth.json into a timestamped directory | read-only |

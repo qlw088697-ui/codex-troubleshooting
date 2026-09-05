@@ -19,7 +19,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 
 | 命令 | 作用 | 危险性 |
 |---|---|---|
-| `doctor` | 全套环境自检（含 codex 版本过期检测、Windows 执行策略、OneDrive 坑位；`--no-network` 跳过网络探测，`--json` 供脚本消费，`--strict` 有警告也返回非零） | 只读 |
+| `doctor` | 全套环境自检（**中转模式感知**：自动探测你配置的中转端点而非官方端点；含 codex 版本过期检测、Windows 执行策略与系统代理、OneDrive 坑位；`--no-network` 跳过探测，`--json` 供脚本消费，`--strict` 有警告也返回非零） | 只读 |
 | `clean sessions [--days 30]` | 归档超过 N 天的会话文件（默认**预演**，`--yes` 才执行） | 低（归档而非删除） |
 | `clean logs [--days 14]` | 同上，针对日志 | 低 |
 | `backup [--out DIR]` | 备份 config.toml + auth.json 到带时间戳目录 | 只读 |

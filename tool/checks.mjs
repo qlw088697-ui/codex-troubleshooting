@@ -19,6 +19,24 @@ async function probe(url) {
   }
 }
 
+async function probeWithRetry(url, tries = 2) {
+  let last = null;
+  for (let i = 0; i < tries; i++) {
+    const r = await probe(url);
+    if (r.ok) return r;
+    last = r;
+  }
+  return last;
+}
+
+function safeHost(u) {
+  try {
+    return new URL(u).host;
+  } catch {
+    return '(无效 URL)';
+  }
+}
+
 function runCmd(cmd, args) {
   try {
     return execFileSync(cmd, args, {
@@ -99,6 +117,7 @@ export async function collectChecks({ network = true } = {}) {
     add('codexdir', 'warn', '~/.codex 不存在（从未运行过 codex，或已被完全重置）');
   }
 
+  let relayUrl = null;
   const cfg = path.join(CODEX_DIR, 'config.toml');
   if (exists(cfg)) {
     add('config', 'ok', 'config.toml 存在');
@@ -126,6 +145,26 @@ export async function collectChecks({ network = true } = {}) {
     }
     if (/^\[model_providers\./m.test(content)) {
       add('providers', 'warn', '检测到第三方 provider 配置——用官方账号报 401 时先核对它', 'docs/04-config.md');
+      // 提取第一个中转 base_url（供网络探测感知中转模式）
+      let inProvider = false;
+      for (const raw of content.split(/\r?\n/)) {
+        const l = raw.trim();
+        if (/^\[model_providers\./.test(l)) {
+          inProvider = true;
+          continue;
+        }
+        if (/^\[/.test(l)) {
+          inProvider = false;
+          continue;
+        }
+        if (inProvider) {
+          const m = l.match(/^base_url\s*=\s*["']([^"']+)["']/);
+          if (m && !relayUrl) relayUrl = m[1];
+        }
+      }
+    }
+    if (relayUrl && !network) {
+      add('relay', 'info', `检测到第三方中转端点 ${safeHost(relayUrl)}（--no-network 未探测）`, 'docs/04-config.md');
     }
   } else {
     add('config', 'info', 'config.toml 不存在（使用默认配置，不一定是问题）');
@@ -154,7 +193,22 @@ export async function collectChecks({ network = true } = {}) {
     'docs/03-network-proxy.md'
   );
 
-  // 5b. Windows PowerShell 执行策略（npm 方式安装的常见拦截点）
+  // 5b. Windows 系统代理（解释「系统有代理但终端不通」类现象）
+  if (process.platform === 'win32') {
+    const q = runShell('reg query "HKCU\\Internet Settings" /v ProxyEnable');
+    if (q && /0x1\b/.test(q)) {
+      const ps = runShell('reg query "HKCU\\Internet Settings" /v ProxyServer');
+      const server = ps ? (ps.split(/\r?\n/).find((l) => /ProxyServer/i.test(l)) || '').trim().split(/\s+/).pop() : '';
+      add(
+        'sysproxy',
+        'info',
+        `Windows 系统代理已开启（${server || '已启用'}）——命令行程序不一定走系统代理，终端报断流先设置 HTTP(S)_PROXY`,
+        'docs/03-network-proxy.md'
+      );
+    }
+  }
+
+  // 5c. Windows PowerShell 执行策略（npm 方式安装的常见拦截点）
   if (process.platform === 'win32') {
     const pol = runShell('powershell -NoProfile -Command Get-ExecutionPolicy');
     if (pol && /restricted/i.test(pol)) {
@@ -162,12 +216,34 @@ export async function collectChecks({ network = true } = {}) {
     }
   }
 
-  // 6. 网络连通性（并行探测）+ codex 版本过期检测
+  // 6. 网络连通性（中转模式感知）+ codex 版本过期检测
   if (network) {
-    const targets = ['https://chatgpt.com', 'https://api.openai.com'];
-    const rs = await Promise.all(targets.map((u) => probe(u).then((r) => ({ u, r }))));
-    for (const { u, r } of rs) {
-      add('net', r.ok ? 'ok' : 'fail', r.ok ? `${u} → HTTP ${r.code}` : `${u} → 不通（${r.err}）`, 'docs/03-network-proxy.md');
+    if (relayUrl) {
+      // 中转用户：探测配置里的中转端点；官方端点降级为参考信息
+      const rr = await probeWithRetry(relayUrl);
+      add(
+        'relay',
+        rr.ok ? 'ok' : 'fail',
+        rr.ok
+          ? `中转端点可达: ${safeHost(relayUrl)} → HTTP ${rr.code}`
+          : `中转端点不可达: ${safeHost(relayUrl)}（${rr.err}）——中转用户断流先查这里`,
+        'docs/04-config.md'
+      );
+      const rs = await Promise.all(['https://chatgpt.com', 'https://api.openai.com'].map((u) => probe(u).then((r) => ({ u, r }))));
+      for (const { u, r } of rs) {
+        add(
+          'net',
+          'info',
+          `官方端点 ${u} → ${r.ok ? `HTTP ${r.code}` : '不可达'}（中转模式下属预期，仅供参考）`,
+          'docs/03-network-proxy.md'
+        );
+      }
+    } else {
+      const targets = ['https://chatgpt.com', 'https://api.openai.com'];
+      const rs = await Promise.all(targets.map((u) => probeWithRetry(u).then((r) => ({ u, r }))));
+      for (const { u, r } of rs) {
+        add('net', r.ok ? 'ok' : 'fail', r.ok ? `${u} → HTTP ${r.code}` : `${u} → 不通（${r.err}）`, 'docs/03-network-proxy.md');
+      }
     }
 
     if (codexVer) {
