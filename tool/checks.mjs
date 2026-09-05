@@ -45,6 +45,31 @@ function runShell(cmdString) {
   }
 }
 
+function compareSemver(a, b) {
+  const pa = String(a).split('.').map(Number);
+  const pb = String(b).split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    const x = pa[i] || 0;
+    const y = pb[i] || 0;
+    if (x !== y) return x < y ? -1 : 1;
+  }
+  return 0;
+}
+
+// 查询 openai/codex 最新稳定版（rust-v0.151.0 → 0.151.0）；失败返回 null 静默跳过
+async function fetchLatestCodexVersion() {
+  try {
+    const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'codex-doctor-cli' };
+    if (process.env.GH_TOKEN) headers.Authorization = `Bearer ${process.env.GH_TOKEN}`;
+    const res = await fetch('https://api.github.com/repos/openai/codex/releases/latest', { headers });
+    if (!res.ok) return null;
+    const tag = (await res.json()).tag_name || '';
+    return (tag.match(/(\d+\.\d+\.\d+)/) || [])[1] || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function collectChecks({ network = true } = {}) {
   const results = [];
   const add = (id, status, detail, doc) => results.push({ id, status, detail, doc });
@@ -129,11 +154,32 @@ export async function collectChecks({ network = true } = {}) {
     'docs/03-network-proxy.md'
   );
 
-  // 6. 网络连通性
+  // 5b. Windows PowerShell 执行策略（npm 方式安装的常见拦截点）
+  if (process.platform === 'win32') {
+    const pol = runShell('powershell -NoProfile -Command Get-ExecutionPolicy');
+    if (pol && /restricted/i.test(pol)) {
+      add('ps-policy', 'warn', `PowerShell 执行策略为 ${pol.trim()}——npm 方式的 codex.ps1 会被拦截`, 'docs/01-installation.md');
+    }
+  }
+
+  // 6. 网络连通性（并行探测）+ codex 版本过期检测
   if (network) {
-    for (const u of ['https://chatgpt.com', 'https://api.openai.com']) {
-      const r = await probe(u);
+    const targets = ['https://chatgpt.com', 'https://api.openai.com'];
+    const rs = await Promise.all(targets.map((u) => probe(u).then((r) => ({ u, r }))));
+    for (const { u, r } of rs) {
       add('net', r.ok ? 'ok' : 'fail', r.ok ? `${u} → HTTP ${r.code}` : `${u} → 不通（${r.err}）`, 'docs/03-network-proxy.md');
+    }
+
+    if (codexVer) {
+      const local = (codexVer.match(/(\d+\.\d+\.\d+)/) || [])[1];
+      const latest = await fetchLatestCodexVersion();
+      if (local && latest) {
+        if (compareSemver(local, latest) < 0) {
+          add('codex-newer', 'warn', `codex 版本偏旧：本地 ${local}，最新稳定版 ${latest}——建议升级`, 'docs/01-installation.md');
+        } else {
+          add('codex-newer', 'ok', `codex 版本为最新稳定版（${local}）`);
+        }
+      }
     }
   }
 
