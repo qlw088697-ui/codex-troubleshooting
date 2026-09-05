@@ -1,6 +1,6 @@
 {
   "name": "@qqq123456789/codex-doctor",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Codex CLI 维护与排障工具：环境自检、会话/日志归档、配置与凭据备份恢复、版本追踪（零依赖）",
   "type": "module",
   "bin": {

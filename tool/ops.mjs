@@ -160,12 +160,13 @@ function compareSemver(a, b) {
 
 export async function checkUpdate(currentVersion) {
   // 与 npm registry 上的包版本对比（仓库 GitHub release 版本号与本工具版本号不同步）
-  const res = await fetch('https://registry.npmjs.org/@qqq123456789%2Fcodex-doctor/latest', {
+  // 注意：缩略 Accept 头配 /latest 端点会返回 406，故请求完整 packument 读 dist-tags
+  const res = await fetch('https://registry.npmjs.org/@qqq123456789%2Fcodex-doctor', {
     headers: { Accept: 'application/vnd.npm.install-v1+json', 'User-Agent': 'codex-doctor-cli' },
   });
   if (!res.ok) throw new Error(`npm registry HTTP ${res.status}`);
   const r = await res.json();
-  const latest = r.version || '';
+  const latest = r['dist-tags']?.latest || '';
   const newer = latest ? compareSemver(currentVersion, latest) < 0 : false;
   return {
     lines: [
