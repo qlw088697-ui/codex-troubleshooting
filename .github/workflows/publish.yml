@@ -1,0 +1,46 @@
+# 推送 v* 标签时自动发布 codex-doctor 到 npm
+# 使用 npm Trusted Publishing（OIDC）：无需 NPM_TOKEN secret，
+# 发布身份绑定本仓库与本工作流（在 npmjs.com 包设置中配置）
+name: npm 发布
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # Trusted Publishing（OIDC）必需
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: 版本变化检查
+        id: ver
+        run: |
+          LOCAL=$(node -p "require('./package.json').version")
+          REG=$(npm view @qqq123456789/codex-doctor version 2>/dev/null || echo none)
+          echo "local=$LOCAL registry=$REG"
+          if [ "$LOCAL" = "$REG" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 夹具回归测试
+        if: steps.ver.outputs.skip == 'false'
+        run: bash scripts/test-codex-doctor.sh
+
+      - name: 发布到 npm（Trusted Publishing）
+        if: steps.ver.outputs.skip == 'false'
+        run: npm publish --access public --provenance

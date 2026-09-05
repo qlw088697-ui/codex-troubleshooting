@@ -4,7 +4,7 @@ import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
 
-const VERSION = '0.3.1';
+const VERSION = '0.4.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -133,9 +133,11 @@ async function main() {
     case 'help':
     case '--help':
     case '-h':
+      console.log(HELP);
+      break;
     case '-v':
     case '--version':
-      console.log(HELP);
+      console.log(`codex-doctor v${VERSION}`);
       break;
     default:
       console.error(`未知命令: ${cmd}\n`);
