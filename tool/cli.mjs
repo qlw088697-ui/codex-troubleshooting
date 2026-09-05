@@ -3,11 +3,11 @@
 import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
-import { listSessions, searchSessions, readTranscript } from './sessions.mjs';
+import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown } from './sessions.mjs';
 import { CODEX_DIR } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '0.8.0';
+const VERSION = '0.9.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -151,6 +151,16 @@ async function main() {
         const item = items[pick - 1];
         console.log(`== 会话 ${item.date} @ ${item.dirName} ==`);
         console.log(`文件: ${item.file}\n`);
+        if (flags.out) {
+          // 导出为 Markdown 文件
+          const r = exportTranscriptMarkdown(item.file, flags.out, { maxLen: flags.full ? Infinity : 400 });
+          if (!r) {
+            console.log('（该会话没有可导出的对话消息）');
+            break;
+          }
+          console.log(`已导出 ${r.count} 条消息 → ${r.outFile}`);
+          break;
+        }
         const transcript = readTranscript(item.file, { maxLen: flags.full ? Infinity : 400 });
         if (!transcript || transcript.length === 0) {
           console.log('（该会话没有可展示的对话消息）');

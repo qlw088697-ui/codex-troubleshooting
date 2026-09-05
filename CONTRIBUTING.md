@@ -36,6 +36,12 @@
 3. **写「验证」**：没有验证步骤的解法等于没写。
 4. **过时内容**：发现文档与当前版本行为不符，直接提 PR 修正并注明你实测的版本号。
 
+## 维护者备忘
+
+- **npm 自动发布**：已配置 Trusted Publishing（OIDC）。发布流程 = 升 `package.json` 版本 → 提交 → 打 `v*` 标签推送，工作流自动跑夹具测试并发布（版本没变自动跳过）。
+- **npm 发布 token**：`codex-doctor-publish`（Bypass 2FA / 90 天）2026-12-04 到期——到期只影响**本地手动** `npm publish`，不影响 CI 自动发布。需要手动发布时到 npmjs.com 重新生成即可。
+- **本地常用命令**：`npm test`（夹具测试）、`npm run check:links`（链接检查）、`npm run check:consistency`（结构一致性）。
+
 ## 文风约定
 
 - 中文为主，命令、报错原文保留英文；

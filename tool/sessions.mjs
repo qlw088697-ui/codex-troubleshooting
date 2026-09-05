@@ -1,7 +1,7 @@
 // sessions：浏览 ~/.codex/sessions 下的历史会话（只读）
 import fs from 'node:fs';
 import path from 'node:path';
-import { CODEX_DIR, exists, walkFiles } from './util.mjs';
+import { CODEX_DIR, exists, walkFiles, ensureDir } from './util.mjs';
 
 // 只读每个文件头部 64KB：meta 在第 1 行，真实提问通常也在最前面
 function readHead(file, bytes = 65536) {
@@ -153,4 +153,30 @@ export function readTranscript(file, { maxLen = 400 } = {}) {
     out.push({ role, text });
   }
   return out;
+}
+
+// 把会话导出为 Markdown 文件（找回的对话可存档分享）
+export function exportTranscriptMarkdown(file, outFile, { maxLen = 400 } = {}) {
+  if (!exists(file)) return null;
+  const content = fs.readFileSync(file, 'utf8');
+  const { meta } = extract(content);
+  const transcript = readTranscript(file, { maxLen });
+  if (!transcript || transcript.length === 0) return null;
+
+  const lines = ['# Codex 会话记录', ''];
+  lines.push(`- 时间：${meta?.date || '?'}`);
+  lines.push(`- 工作目录：${meta?.cwd || '?'}`);
+  lines.push(`- 来源：${meta?.originator || '?'}`);
+  lines.push(`- 导出自：${file}`);
+  lines.push('');
+  for (const msg of transcript) {
+    lines.push(`## ${msg.role === 'user' ? '用户' : 'Codex'}`);
+    lines.push('');
+    lines.push(msg.text);
+    lines.push('');
+  }
+  const dest = path.resolve(outFile);
+  ensureDir(path.dirname(dest));
+  fs.writeFileSync(dest, lines.join('\n'), 'utf8');
+  return { outFile: dest, count: transcript.length };
 }
