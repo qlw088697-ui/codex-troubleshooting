@@ -31,6 +31,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `archive list` | 查看归档目录与体积 | 只读 |
 | `archive delete <名称\|--all>` | 删除归档（默认需交互确认，`--yes` 跳过） | 中（删除，需确认） |
 | `versions [-n 10]` | 查看 openai/codex 最近 N 个版本（含预发布标记） | 只读 |
+| `config` | 只读摘要：模型 / provider / 审批沙箱 / profiles / 中转 / MCP / 认证方式（敏感值脱敏） | 只读 |
 | `sessions [-n 10] [--dir 关键字]` | 浏览历史会话：时间、工作目录、来源、首条提问预览；`--dir` 按目录过滤，找回「上次那个对话」 | 只读 |
 | `sessions --search 关键词 [--deep]` | 按关键词搜索会话（默认搜每个文件开头 256KB，`--deep` 全文扫描） | 只读 |
 | `sessions --show [--search 关键词] [--pick N] [--full]` | 查看会话完整对话（默认最近一次；默认单条截断 400 字） | 只读 |

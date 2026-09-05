@@ -1,0 +1,41 @@
+# Release 发布后自动生成并附带最新版离线 PDF 手册
+name: PDF 手册
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装 marked
+        run: npm install -g marked
+
+      - name: 生成 PDF 手册
+        run: node scripts/build-pdf.mjs
+
+      - name: 上传 PDF 到 Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          RID=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG" \
+            | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).id))")
+          curl -sf -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Content-Type: application/pdf" \
+            --data-binary @codex-troubleshooting-handbook.pdf \
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/$RID/assets?name=codex-troubleshooting-handbook.pdf"
+          echo "PDF 已附带（Release $TAG）"

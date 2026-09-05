@@ -104,18 +104,34 @@ const html = `<!DOCTYPE html>
 fs.writeFileSync('codex-troubleshooting-handbook.html', html, 'utf8');
 console.log(`HTML 已生成: codex-troubleshooting-handbook.html`);
 
-const edgeCandidates = [
+// 本地优先 Edge；CI（ubuntu-latest）用预装的 Google Chrome / Chromium
+const printCandidates = [
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
   'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+  '/usr/bin/google-chrome',
+  '/usr/bin/google-chrome-stable',
+  '/usr/bin/chromium-browser',
+  '/usr/bin/chromium',
 ];
-const edge = edgeCandidates.find((p) => fs.existsSync(p));
-if (!edge) {
-  console.error('未找到 Edge，可手动用浏览器打开 HTML 后打印为 PDF。');
+const htmlUrl = `file:///${path.resolve('codex-troubleshooting-handbook.html').replace(/\\/g, '/')}`;
+const pdfOut = path.resolve('codex-troubleshooting-handbook.pdf');
+let printed = false;
+for (const bin of printCandidates) {
+  if (!fs.existsSync(bin)) continue;
+  try {
+    execSync(`"${bin}" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="${pdfOut}" "${htmlUrl}"`, {
+      stdio: 'ignore',
+      timeout: 120000,
+    });
+    printed = fs.existsSync(pdfOut);
+    if (printed) break;
+  } catch {
+    /* 尝试下一个候选 */
+  }
+}
+if (!printed) {
+  console.error('未找到可用的 Chrome/Edge，可手动用浏览器打开 HTML 后打印为 PDF。');
   process.exit(1);
 }
-execSync(`"${edge}" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="${path.resolve('codex-troubleshooting-handbook.pdf')}" "file:///${path.resolve('codex-troubleshooting-handbook.html').replace(/\\/g, '/')}"`, {
-  stdio: 'ignore',
-  timeout: 120000,
-});
-const size = fs.statSync('codex-troubleshooting-handbook.pdf').size;
+const size = fs.statSync(pdfOut).size;
 console.log(`PDF 已生成: codex-troubleshooting-handbook.pdf（${(size / 1024 / 1024).toFixed(2)} MB）`);

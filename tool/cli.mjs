@@ -4,10 +4,11 @@ import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
 import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown } from './sessions.mjs';
+import { configSummary } from './config.mjs';
 import { CODEX_DIR } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '0.9.0';
+const VERSION = '1.0.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -27,6 +28,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   archive list                  查看归档目录与体积
   archive delete <名称|--all>   删除归档（需 --yes 或交互确认）
   versions [-n N]               查看 openai/codex 最近 N 个版本（默认 10）
+  config                        只读摘要：模型 / provider / 审批沙箱 / profiles / 中转 / MCP / 认证方式
   sessions [-n N] [--dir 关键字] 浏览历史会话：时间、目录、来源、首条提问预览
              [--search 关键词] [--deep] 按关键词搜索会话（--deep 全文扫描）
              --show [--search 关键词] [--pick N] [--full] 查看会话完整对话
@@ -207,6 +209,10 @@ async function main() {
         );
       }
       console.log(`\n会话文件位于 ${path.join(CODEX_DIR, 'sessions')}（-n 条数 / --dir 按目录关键字过滤）`);
+      break;
+    }
+    case 'config': {
+      for (const l of configSummary()) console.log(l);
       break;
     }
     case 'update': {

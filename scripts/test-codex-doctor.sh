@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 FIX="$(mktemp -d)"
 trap 'rm -rf "$FIX"' EXIT
 mkdir -p "$FIX/.codex/sessions/2026/01" "$FIX/.codex/log"
-printf 'model = "gpt-x"\n\n[model_providers.a]\nname = "a"\nbase_url = "https://relay.example.com/v1"\nenv_key = "RELAY_KEY"\nmodel = "y"\n' > "$FIX/.codex/config.toml"
+printf 'model = "gpt-x"\n\n[model_providers.a]\nname = "a"\nbase_url = "https://relay.example.com/v1"\nenv_key = "RELAY_KEY"\nmodel = "y"\n\n[mcp_servers.demo]\ncommand = "npx"\n\n[mcp_servers.demo.env]\nDEMO_VAR = "1"\n' > "$FIX/.codex/config.toml"
 echo '{"OPENAI_API_KEY":null}' > "$FIX/.codex/auth.json"
 echo old-session > "$FIX/.codex/sessions/2026/01/old.jsonl"
 touch -d "2026-01-01" "$FIX/.codex/sessions/2026/01/old.jsonl"
@@ -117,5 +117,14 @@ cli sessions --show --search codexsearchkeyword --out "$FIX/export.md" | grep -q
 grep -q "## 用户" "$FIX/export.md" || fail "导出内容缺少用户消息"
 grep -q "已定位并修复" "$FIX/export.md" || fail "导出内容缺少 Codex 消息"
 echo "ok 12/12: sessions 导出 Markdown"
+
+# 13) config：只读摘要可解析 provider / MCP（含嵌套表）且不泄露敏感值
+printf '%s\n' \
+  '{"tokens":{"id_token":"x"},"OPENAI_API_KEY":null}' > /dev/null  # 占位保持结构可读
+CFG_OUT=$(cli config)
+echo "$CFG_OUT" | grep -q "中转 a: relay.example.com" || fail "config 未识别中转端点"
+echo "$CFG_OUT" | grep -q "（Key 在环境变量" || fail "config 未提示 env_key 位置"
+if echo "$CFG_OUT" | grep -q "sk-[A-Za-z0-9]"; then fail "config 泄露了 key"; fi
+echo "ok 13/13: config 只读摘要"
 
 echo "✅ 全部夹具测试通过"
