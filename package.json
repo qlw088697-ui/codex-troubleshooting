@@ -1,6 +1,6 @@
 {
   "name": "@qqq123456789/codex-doctor",
-  "version": "0.10.0",
+  "version": "1.1.0",
   "scripts": {
     "test": "bash scripts/test-codex-doctor.sh",
     "check:links": "bash scripts/check-links.sh",
