@@ -25,7 +25,13 @@ Codex CLI 迭代很快，社区里反复出现的问题高度集中：**登录�
 
 ## 快速开始：先跑一次环境自检
 
-遇到任何异常，先跑自检脚本收集环境信息：
+最简单的方式（工具已发布 npm）：
+
+```bash
+npx -y @qqq123456789/codex-doctor
+```
+
+也可以用脚本方式（无需 Node）：
 
 ```powershell
 # Windows PowerShell

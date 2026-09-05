@@ -79,3 +79,50 @@ export function listSessions({ limit = 10, cwdFilter = null } = {}) {
     : items;
   return filtered.slice(0, Math.max(Number(limit) || 10, 1));
 }
+
+// 关键词搜索：默认读每个文件前 256KB（浅搜），--deep 全文扫描
+export function searchSessions({ keyword, limit = 10, deep = false } = {}) {
+  const root = path.join(CODEX_DIR, 'sessions');
+  if (!exists(root) || !keyword) return [];
+  const kw = String(keyword).toLowerCase();
+  const files = walkFiles(root)
+    .filter((f) => f.endsWith('.jsonl'))
+    .map((f) => ({ f, mtimeMs: fs.statSync(f).mtimeMs }))
+    .sort((a, b) => b.mtimeMs - a.mtimeMs);
+
+  const results = [];
+  for (const { f, mtimeMs } of files) {
+    let content;
+    try {
+      content = deep ? fs.readFileSync(f, 'utf8') : readHead(f, 262144);
+    } catch {
+      continue;
+    }
+    const at = content.toLowerCase().indexOf(kw);
+    if (at === -1) continue;
+
+    // 定位匹配行，尽量抽出对话文本片段
+    const lineEnd = content.indexOf('\n', at) === -1 ? content.length : content.indexOf('\n', at);
+    const line = content.slice(content.lastIndexOf('\n', at) + 1, lineEnd);
+    let snippet = '';
+    try {
+      const j = JSON.parse(line);
+      const text =
+        (j.payload?.content || []).find((c) => c.text)?.text || j.payload?.text || line;
+      const t = text.toLowerCase().indexOf(kw);
+      snippet = (t >= 0 ? text.slice(Math.max(0, t - 30), t + 70) : text.slice(0, 90)).replace(/\s+/g, ' ').trim();
+    } catch {
+      snippet = line.slice(0, 90).replace(/\s+/g, ' ').trim();
+    }
+
+    const { meta } = extract(content);
+    results.push({
+      date: (meta?.date) || new Date(mtimeMs).toISOString().slice(0, 16).replace('T', ' '),
+      dirName: meta?.cwd ? path.basename(meta.cwd) : '?',
+      snippet: snippet || '(匹配在元数据中)',
+      mtimeMs,
+    });
+    if (results.length >= Math.max(Number(limit) || 10, 1)) break;
+  }
+  return results;
+}

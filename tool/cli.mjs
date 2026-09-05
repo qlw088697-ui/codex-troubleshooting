@@ -3,11 +3,11 @@
 import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
-import { listSessions } from './sessions.mjs';
+import { listSessions, searchSessions } from './sessions.mjs';
 import { CODEX_DIR } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '0.6.0';
+const VERSION = '0.7.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -28,6 +28,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   archive delete <名称|--all>   删除归档（需 --yes 或交互确认）
   versions [-n N]               查看 openai/codex 最近 N 个版本（默认 10）
   sessions [-n N] [--dir 关键字] 浏览历史会话：时间、目录、来源、首条提问预览
+             [--search 关键词] [--deep] 按关键词搜索会话（--deep 全文扫描）
   update                        查询 npm 最新版本与更新方式
   help                          显示本帮助
 
@@ -45,6 +46,8 @@ function parseFlags(args) {
     else if (a === '--days') flags.days = Number(args[++i]);
     else if (a === '-n' || a === '--limit') flags.limit = Number(args[++i]);
     else if (a === '--dir') flags.dir = args[++i];
+    else if (a === '--search') flags.search = args[++i];
+    else if (a === '--deep') flags.deep = true;
     else if (a === '--out') flags.out = args[++i];
     else rest.push(a);
   }
@@ -131,6 +134,24 @@ async function main() {
       break;
     }
     case 'sessions': {
+      if (flags.search) {
+        const items = searchSessions({
+          keyword: flags.search,
+          limit: Number.isFinite(flags.limit) ? flags.limit : 10,
+          deep: flags.deep === true,
+        });
+        if (items.length === 0) {
+          console.log(
+            `没有找到包含「${flags.search}」的会话${flags.deep ? '' : '（默认只搜每个文件开头部分，可加 --deep 全文搜索）'}`
+          );
+          break;
+        }
+        console.log('时间                工作目录              匹配片段');
+        for (const it of items) {
+          console.log(`${it.date.padEnd(18)} ${it.dirName.padEnd(20).slice(0, 20)} ${it.snippet}`);
+        }
+        break;
+      }
       const items = listSessions({
         limit: Number.isFinite(flags.limit) ? flags.limit : 10,
         cwdFilter: flags.dir || null,
