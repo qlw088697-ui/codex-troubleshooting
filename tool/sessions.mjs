@@ -61,6 +61,7 @@ export function listSessions({ limit = 10, cwdFilter = null } = {}) {
       const { meta, preview } = extract(readHead(f));
       if (!meta) continue;
       items.push({
+        file: f,
         date: meta.date || st.mtime.toISOString().slice(0, 16).replace('T', ' '),
         dirName: meta.cwd ? path.basename(meta.cwd) : '?',
         cwd: meta.cwd,
@@ -117,6 +118,7 @@ export function searchSessions({ keyword, limit = 10, deep = false } = {}) {
 
     const { meta } = extract(content);
     results.push({
+      file: f,
       date: (meta?.date) || new Date(mtimeMs).toISOString().slice(0, 16).replace('T', ' '),
       dirName: meta?.cwd ? path.basename(meta.cwd) : '?',
       snippet: snippet || '(匹配在元数据中)',
@@ -125,4 +127,30 @@ export function searchSessions({ keyword, limit = 10, deep = false } = {}) {
     if (results.length >= Math.max(Number(limit) || 10, 1)) break;
   }
   return results;
+}
+
+// 读取单个会话的完整对话（user / assistant 消息，跳过环境包装与工具输出）
+export function readTranscript(file, { maxLen = 400 } = {}) {
+  if (!exists(file)) return null;
+  const content = fs.readFileSync(file, 'utf8');
+  const out = [];
+  for (const line of content.split('\n')) {
+    if (!line.trim()) continue;
+    let j;
+    try {
+      j = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (j.type !== 'response_item' || j.payload?.type !== 'message') continue;
+    const role = j.payload.role;
+    if (role !== 'user' && role !== 'assistant') continue;
+    let text = (j.payload.content || []).map((c) => c.text || '').filter(Boolean).join('\n');
+    if (!text) continue;
+    if (role === 'user' && (text.startsWith('<environment_context>') || text.startsWith('<user_instructions>'))) continue;
+    if (role === 'user' && text.startsWith('<permissions')) continue;
+    if (text.length > maxLen) text = text.slice(0, maxLen) + '…';
+    out.push({ role, text });
+  }
+  return out;
 }

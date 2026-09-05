@@ -3,11 +3,11 @@
 import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
-import { listSessions, searchSessions } from './sessions.mjs';
+import { listSessions, searchSessions, readTranscript } from './sessions.mjs';
 import { CODEX_DIR } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '0.7.0';
+const VERSION = '0.8.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -29,6 +29,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   versions [-n N]               查看 openai/codex 最近 N 个版本（默认 10）
   sessions [-n N] [--dir 关键字] 浏览历史会话：时间、目录、来源、首条提问预览
              [--search 关键词] [--deep] 按关键词搜索会话（--deep 全文扫描）
+             --show [--search 关键词] [--pick N] [--full] 查看会话完整对话
   update                        查询 npm 最新版本与更新方式
   help                          显示本帮助
 
@@ -48,6 +49,9 @@ function parseFlags(args) {
     else if (a === '--dir') flags.dir = args[++i];
     else if (a === '--search') flags.search = args[++i];
     else if (a === '--deep') flags.deep = true;
+    else if (a === '--show') flags.show = true;
+    else if (a === '--pick') flags.pick = Number(args[++i]);
+    else if (a === '--full') flags.full = true;
     else if (a === '--out') flags.out = args[++i];
     else rest.push(a);
   }
@@ -134,6 +138,31 @@ async function main() {
       break;
     }
     case 'sessions': {
+      if (flags.show) {
+        // 展示会话完整对话：默认最近一次；--search 按关键词定位；--pick N 选第 N 个命中
+        const items = flags.search
+          ? searchSessions({ keyword: flags.search, limit: 20, deep: true })
+          : listSessions({ limit: 20 });
+        if (items.length === 0) {
+          console.log(flags.search ? `没有找到包含「${flags.search}」的会话` : '~/.codex/sessions 里没有会话记录');
+          break;
+        }
+        const pick = Math.min(Math.max(Number(flags.pick) || 1, 1), items.length);
+        const item = items[pick - 1];
+        console.log(`== 会话 ${item.date} @ ${item.dirName} ==`);
+        console.log(`文件: ${item.file}\n`);
+        const transcript = readTranscript(item.file, { maxLen: flags.full ? Infinity : 400 });
+        if (!transcript || transcript.length === 0) {
+          console.log('（该会话没有可展示的对话消息）');
+          break;
+        }
+        for (const msg of transcript) {
+          const who = msg.role === 'user' ? '[用户]' : '[Codex]';
+          console.log(`${who} ${msg.text}\n`);
+        }
+        console.log(`（共 ${transcript.length} 条消息${flags.full ? '' : '，单条超 400 字已截断，--full 查看全文'}）`);
+        break;
+      }
       if (flags.search) {
         const items = searchSessions({
           keyword: flags.search,
