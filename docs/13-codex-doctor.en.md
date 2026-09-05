@@ -31,7 +31,8 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `archive list` | List archive folders with sizes | read-only |
 | `archive delete <name\|--all>` | Delete archives (interactive confirm by default, `--yes` to skip) | medium (deletes, requires confirm) |
 | `versions [-n 10]` | List the latest openai/codex releases (prerelease flagged) | read-only |
-| `update` | Check the repo's latest release and how to update | read-only |
+| `sessions [-n 10] [--dir keyword]` | Browse past sessions: time, workdir, source, first-prompt preview; `--dir` filters by directory — find "that conversation" | read-only |
+| `update` | Check the latest npm version and how to update | read-only |
 
 ## Design principles
 

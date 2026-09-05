@@ -3,8 +3,11 @@
 import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
+import { listSessions } from './sessions.mjs';
+import { CODEX_DIR } from './util.mjs';
+import path from 'node:path';
 
-const VERSION = '0.5.0';
+const VERSION = '0.6.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -24,7 +27,8 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   archive list                  查看归档目录与体积
   archive delete <名称|--all>   删除归档（需 --yes 或交互确认）
   versions [-n N]               查看 openai/codex 最近 N 个版本（默认 10）
-  update                        查询仓库最新发布与更新方式
+  sessions [-n N] [--dir 关键字] 浏览历史会话：时间、目录、来源、首条提问预览
+  update                        查询 npm 最新版本与更新方式
   help                          显示本帮助
 
 全局: --yes 跳过交互确认（非 TTY 环境必须显式提供）。文档: docs/13-codex-doctor.md`;
@@ -40,6 +44,7 @@ function parseFlags(args) {
     else if (a === '--strict') flags.strict = true;
     else if (a === '--days') flags.days = Number(args[++i]);
     else if (a === '-n' || a === '--limit') flags.limit = Number(args[++i]);
+    else if (a === '--dir') flags.dir = args[++i];
     else if (a === '--out') flags.out = args[++i];
     else rest.push(a);
   }
@@ -123,6 +128,25 @@ async function main() {
       }
       console.error('用法: codex-doctor archive <list|delete <名称|--all>> [--yes]');
       process.exitCode = 1;
+      break;
+    }
+    case 'sessions': {
+      const items = listSessions({
+        limit: Number.isFinite(flags.limit) ? flags.limit : 10,
+        cwdFilter: flags.dir || null,
+      });
+      if (items.length === 0) {
+        console.log(flags.dir ? `没有匹配「${flags.dir}」的会话记录` : '~/.codex/sessions 里没有会话记录');
+        break;
+      }
+      console.log('时间                工作目录              来源              首条提问');
+      for (const it of items) {
+        const origin = (it.originator || '?') + (it.subagent ? '(子代理)' : '');
+        console.log(
+          `${it.date.padEnd(18)} ${it.dirName.padEnd(20).slice(0, 20)} ${origin.padEnd(16).slice(0, 16)} ${it.preview || ''}`
+        );
+      }
+      console.log(`\n会话文件位于 ${path.join(CODEX_DIR, 'sessions')}（-n 条数 / --dir 按目录关键字过滤）`);
       break;
     }
     case 'update': {
