@@ -25,7 +25,10 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `backup [--out DIR]` | 备份 config.toml + auth.json 到带时间戳目录 | 只读 |
 | `restore <dir>` | 从备份目录恢复 | 中（覆盖现有文件） |
 | `auth reset` | 备份并删除 auth.json，引导重新 `codex login`（401 终极大招的一键化） | 中 |
+| `archive list` | 查看归档目录与体积 | 只读 |
+| `archive delete <名称\|--all>` | 删除归档（默认需交互确认，`--yes` 跳过） | 中（删除，需确认） |
 | `versions [-n 10]` | 查看 openai/codex 最近 N 个版本（含预发布标记） | 只读 |
+| `update` | 查询仓库最新发布与更新方式 | 只读 |
 
 ## 设计原则
 

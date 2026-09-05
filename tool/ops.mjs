@@ -1,7 +1,7 @@
-// ops：备份/恢复、auth 重置、版本追踪
+// ops：备份/恢复、auth 重置、版本追踪、归档管理、更新检查
 import fs from 'node:fs';
 import path from 'node:path';
-import { BACKUP_DIR, CODEX_DIR, ensureDir, exists, timestamp, confirm } from './util.mjs';
+import { BACKUP_DIR, CODEX_DIR, ensureDir, exists, timestamp, confirm, dirBytes } from './util.mjs';
 
 const CRITICAL_FILES = ['config.toml', 'auth.json'];
 
@@ -84,4 +84,96 @@ export async function listVersions(limit = 10) {
     date: (r.published_at || '').slice(0, 10) || '—',
     prerelease: r.prerelease === true,
   }));
+}
+
+// ---------- 归档管理 ----------
+
+const ARCHIVE_ROOT = () => path.join(CODEX_DIR, 'archive');
+
+export function listArchives() {
+  const root = ARCHIVE_ROOT();
+  if (!exists(root)) return { items: [], lines: [`暂无归档目录（${root}）`] };
+  const items = [];
+  for (const name of fs.readdirSync(root)) {
+    const p = path.join(root, name);
+    if (!fs.statSync(p).isDirectory()) continue;
+    let files = 0;
+    (function w(x) {
+      for (const e of fs.readdirSync(x, { withFileTypes: true })) {
+        if (e.isDirectory()) w(path.join(x, e.name));
+        else files++;
+      }
+    })(p);
+    items.push({ name, bytes: dirBytes(p), files });
+  }
+  if (items.length === 0) return { items: [], lines: ['归档目录为空'] };
+  return { items, lines: [] };
+}
+
+export async function deleteArchive(name, { all = false, yes = false } = {}) {
+  const root = path.resolve(ARCHIVE_ROOT());
+  const targets = [];
+  if (all) {
+    if (!exists(root)) return { lines: ['暂无归档可删除'] };
+    for (const n of fs.readdirSync(root)) {
+      const p = path.join(root, n);
+      if (fs.statSync(p).isDirectory()) targets.push({ name: n, p, bytes: dirBytes(p) });
+    }
+  } else {
+    if (!name) return { bad: true, lines: ['用法: codex-doctor archive delete <名称|--all>'] };
+    const p = path.resolve(root, String(name));
+    // 防目录穿越：目标必须仍在 archive 根内
+    if (!p.toLowerCase().startsWith(root.toLowerCase() + path.sep) || !exists(p) || !fs.statSync(p).isDirectory()) {
+      return { bad: true, lines: [`归档不存在: ${name}`] };
+    }
+    targets.push({ name: path.basename(p), p, bytes: dirBytes(p) });
+  }
+  if (targets.length === 0) return { lines: ['归档目录为空，无需删除'] };
+
+  const totalMB = targets.reduce((s, t) => s + t.bytes, 0) / 1024 / 1024;
+  const summary = `将删除 ${targets.length} 个归档目录（共约 ${totalMB.toFixed(1)} MB）：${targets.map((t) => t.name).join(', ')}`;
+  if (!yes) {
+    const go = await confirm(`${summary}，继续？`);
+    if (!go) return { lines: ['已取消'] };
+  }
+  const lines = [];
+  for (const t of targets) {
+    fs.rmSync(t.p, { recursive: true, force: true });
+    lines.push(`已删除 ${t.name}`);
+  }
+  lines.push(`共释放约 ${totalMB.toFixed(1)} MB`);
+  return { lines };
+}
+
+// ---------- 更新检查 ----------
+
+function compareSemver(a, b) {
+  const pa = String(a).split('.').map(Number);
+  const pb = String(b).split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    const x = pa[i] || 0;
+    const y = pb[i] || 0;
+    if (x !== y) return x < y ? -1 : 1;
+  }
+  return 0;
+}
+
+export async function checkUpdate(currentVersion) {
+  const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'codex-doctor-cli' };
+  if (process.env.GH_TOKEN) headers.Authorization = `Bearer ${process.env.GH_TOKEN}`;
+  const res = await fetch('https://api.github.com/repos/qlw088697-ui/codex-troubleshooting/releases/latest', { headers });
+  if (!res.ok) throw new Error(`GitHub API HTTP ${res.status}`);
+  const r = await res.json();
+  const tag = r.tag_name || '';
+  const latest = tag.replace(/^v/, '');
+  const newer = latest ? compareSemver(currentVersion, latest) < 0 : false;
+  return {
+    lines: [
+      `当前工具版本: ${currentVersion}`,
+      `仓库最新发布: ${tag}（${(r.published_at || '').slice(0, 10)}）`,
+      newer
+        ? 'npx 直跑始终使用最新代码，无需操作；本地克隆请 git pull 后重跑。'
+        : '已是最新版本。',
+    ],
+  };
 }

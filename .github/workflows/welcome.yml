@@ -1,0 +1,33 @@
+# 首次 Issue / PR 自动致谢
+name: 欢迎首次贡献
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            🎉 感谢你的第一个 Issue！
+
+            为了更快定位问题，建议附上：
+            1. `codex --version` 与操作系统/终端；
+            2. [codex-doctor 自检](https://github.com/qlw088697-ui/codex-troubleshooting/blob/main/docs/13-codex-doctor.md)的输出（`npx github:qlw088697-ui/codex-troubleshooting doctor`，脱敏后粘贴）；
+            3. 先查一查 [报错速查表](https://github.com/qlw088697-ui/codex-troubleshooting/blob/main/docs/08-errors-quickref.md)——也许已经有现成解法。
+
+            讨论性质的问题更适合去 [Discussions](https://github.com/qlw088697-ui/codex-troubleshooting/discussions)。
+          pr-message: |
+            🎉 感谢你的第一个 PR！
+
+            CI 会自动跑三项检查（脚本语法 / 相对链接 / 结构一致性），绿灯即可合并。补充案例请遵循 [CONTRIBUTING](https://github.com/qlw088697-ui/codex-troubleshooting/blob/main/CONTRIBUTING.md) 的「五要素」格式，注意脱敏。辛苦了！

@@ -25,7 +25,10 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `backup [--out DIR]` | Back up config.toml + auth.json into a timestamped directory | read-only |
 | `restore <dir>` | Restore from a backup directory | medium (overwrites) |
 | `auth reset` | Back up and delete auth.json, then re-run `codex login` (the 401 last resort, one command) | medium |
+| `archive list` | List archive folders with sizes | read-only |
+| `archive delete <name\|--all>` | Delete archives (interactive confirm by default, `--yes` to skip) | medium (deletes, requires confirm) |
 | `versions [-n 10]` | List the latest openai/codex releases (prerelease flagged) | read-only |
+| `update` | Check the repo's latest release and how to update | read-only |
 
 ## Design principles
 

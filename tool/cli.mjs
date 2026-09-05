@@ -2,9 +2,9 @@
 // codex-doctor CLI 入口：codex-doctor <command> [options]
 import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
-import { backupConfig, restoreBackup, resetAuth, listVersions } from './ops.mjs';
+import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -21,7 +21,10 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   backup [--out DIR]            备份 config.toml + auth.json 到带时间戳目录
   restore <dir>                 从备份目录恢复
   auth reset                    备份并删除 auth.json，引导重新登录（401 终极大招）
+  archive list                  查看归档目录与体积
+  archive delete <名称|--all>   删除归档（需 --yes 或交互确认）
   versions [-n N]               查看 openai/codex 最近 N 个版本（默认 10）
+  update                        查询仓库最新发布与更新方式
   help                          显示本帮助
 
 全局: --yes 跳过交互确认（非 TTY 环境必须显式提供）。文档: docs/13-codex-doctor.md`;
@@ -97,6 +100,34 @@ async function main() {
       for (const r of rels) {
         console.log(`${r.tag.padEnd(24)} ${r.date}  ${r.prerelease ? '是' : ''}`);
       }
+      break;
+    }
+    case 'archive': {
+      const sub = rest[0];
+      if (sub === 'list') {
+        const r = listArchives();
+        if (r.items.length > 0) {
+          for (const it of r.items) {
+            console.log(`${it.name.padEnd(36)} ${(it.bytes / 1024 / 1024).toFixed(1).padStart(8)} MB   ${it.files} 个文件`);
+          }
+        } else {
+          print(r.lines);
+        }
+        break;
+      }
+      if (sub === 'delete') {
+        const r = await deleteArchive(rest[1], { all: rest[1] === '--all', yes: flags.yes === true });
+        print(r.lines);
+        if (r.bad) process.exitCode = 1;
+        break;
+      }
+      console.error('用法: codex-doctor archive <list|delete <名称|--all>> [--yes]');
+      process.exitCode = 1;
+      break;
+    }
+    case 'update': {
+      const r = await checkUpdate(VERSION);
+      print(r.lines);
       break;
     }
     case 'help':
