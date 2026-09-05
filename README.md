@@ -8,6 +8,7 @@
 
 [![CI](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml/badge.svg)](https://github.com/qlw088697-ui/codex-troubleshooting/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@qqq123456789/codex-doctor)](https://www.npmjs.com/package/@qqq123456789/codex-doctor)
+[![Downloads](https://img.shields.io/npm/dt/@qqq123456789/codex-doctor)](https://www.npmjs.com/package/@qqq123456789/codex-doctor)
 [![Latest release](https://img.shields.io/github/v/release/qlw088697-ui/codex-troubleshooting?label=release)](https://github.com/qlw088697-ui/codex-troubleshooting/releases)
 [![Latest Codex](https://img.shields.io/github/v/release/openai/codex?label=latest%20codex)](docs/releases.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
