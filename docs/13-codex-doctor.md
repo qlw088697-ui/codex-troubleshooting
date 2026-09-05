@@ -7,10 +7,13 @@
 ## 运行方式
 
 ```bash
-# 方式一：npx 直跑（无需安装）
+# 方式一：npx 直跑（发布在 npm，无需安装）
+npx -y @qqq123456789/codex-doctor doctor
+
+# 方式二：直接从 GitHub 跑（不经过 npm）
 npx github:qlw088697-ui/codex-troubleshooting doctor
 
-# 方式二：克隆仓库后本地跑
+# 方式三：克隆仓库后本地跑
 git clone https://github.com/qlw088697-ui/codex-troubleshooting.git
 node codex-troubleshooting/tool/cli.mjs --help
 ```

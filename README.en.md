@@ -28,7 +28,7 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 irm https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/main/scripts/codex-doctor.ps1 | iex
 ```
 
-Prefer a CLI? `npx github:qlw088697-ui/codex-troubleshooting doctor` — zero-dependency, with cleanup/backup/archive-management/version commands too. See [13 codex-doctor CLI](docs/13-codex-doctor.en.md).
+Prefer a CLI? `npx -y @qqq123456789/codex-doctor doctor` — zero-dependency, with cleanup/backup/archive-management/version commands too. See [13 codex-doctor CLI](docs/13-codex-doctor.en.md).
 
 ## Symptom → doc map
 

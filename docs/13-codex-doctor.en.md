@@ -7,10 +7,13 @@ English | [中文](13-codex-doctor.md)
 ## Run it
 
 ```bash
-# Option 1: npx (no install)
+# Option 1: npx (published on npm, no install)
+npx -y @qqq123456789/codex-doctor doctor
+
+# Option 2: run straight from GitHub (skips npm)
 npx github:qlw088697-ui/codex-troubleshooting doctor
 
-# Option 2: clone and run locally
+# Option 3: clone and run locally
 git clone https://github.com/qlw088697-ui/codex-troubleshooting.git
 node codex-troubleshooting/tool/cli.mjs --help
 ```

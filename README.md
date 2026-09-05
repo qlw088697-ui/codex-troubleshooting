@@ -43,8 +43,8 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 把本手册的检查与维护做成了一条条命令（零依赖，Node 18.15+）：
 
 ```bash
-npx github:qlw088697-ui/codex-troubleshooting doctor      # 环境自检
-npx github:qlw088697-ui/codex-troubleshooting --help      # 查看全部命令
+npx -y @qqq123456789/codex-doctor doctor      # 环境自检
+npx -y @qqq123456789/codex-doctor --help      # 查看全部命令
 ```
 
 环境自检、会话/日志归档（预演制）、配置与凭据备份恢复、归档管理、版本追踪——详见 [13 · codex-doctor CLI](docs/13-codex-doctor.md)。
