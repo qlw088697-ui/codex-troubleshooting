@@ -14,6 +14,8 @@ English | [中文](README.md)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20WSL-lightgrey)](docs/06-sandbox-windows.md)
 
 > 📖 **Read online**：<https://qlw088697-ui.github.io/codex-troubleshooting/> (docsify site with full-text search, kept in sync with this repo)
+>
+> 📄 Prefer offline? Every release attaches a merged **PDF handbook** (`node scripts/build-pdf.mjs` regenerates it) — see [Releases](https://github.com/qlw088697-ui/codex-troubleshooting/releases).
 
 ## Quick start: run the environment self-check first
 

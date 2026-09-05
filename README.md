@@ -45,6 +45,8 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 
 （也可以下载 `scripts/` 目录里的脚本本地运行。脚本只读环境信息，不会修改任何配置。）
 
+> 📄 喜欢离线阅读？每次发版都会在 [Releases](https://github.com/qlw088697-ui/codex-troubleshooting/releases) 附上合并排版的 PDF 手册（`node scripts/build-pdf.mjs` 可自行生成）。
+
 ## 🛠️ 配套工具：codex-doctor CLI
 
 把本手册的检查与维护做成了一条条命令（零依赖，Node 18.15+）：

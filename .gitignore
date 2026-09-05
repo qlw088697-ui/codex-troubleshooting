@@ -17,3 +17,7 @@ npm-debug.log*
 .env
 config.toml
 auth.json
+
+# 构建产物（PDF 手册由 scripts/build-pdf.mjs 生成，随 Release 附件分发）
+codex-troubleshooting-handbook.html
+codex-troubleshooting-handbook.pdf
