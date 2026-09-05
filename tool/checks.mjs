@@ -347,11 +347,32 @@ export function summarize(results) {
 
 export function renderHuman(results, summary) {
   const sym = { ok: '[OK]  ', warn: '[WARN]', fail: '[FAIL]', info: '[--]  ' };
-  const lines = ['codex-doctor - Codex 环境自检', ''];
+  // 检查项所属分组（按 id），输出时分节展示
+  const SECTION_OF = {
+    codex: '基础环境', node: '基础环境', 'codex-newer': '基础环境',
+    codexdir: '配置与凭据', config: '配置与凭据', 'config-roots': '配置与凭据',
+    providers: '配置与凭据', relay: '配置与凭据', auth: '配置与凭据', 'auth-expiry': '配置与凭据',
+    'env-key': '环境变量', 'env-url': '环境变量', proxy: '环境变量', sysproxy: '环境变量',
+    net: '网络',
+    disk: '系统', onedrive: '系统坑位', 'wsl-state': '系统坑位', 'ps-policy': '系统坑位', sessions: '维护',
+  };
+  const ORDER = ['基础环境', '配置与凭据', '环境变量', '网络', '系统', '系统坑位', '维护', '其他'];
+  const groups = new Map();
   for (const r of results) {
-    lines.push(`${sym[r.status]} ${r.detail}${r.doc ? `  → ${r.doc}` : ''}`);
+    const s = SECTION_OF[r.id] || '其他';
+    if (!groups.has(s)) groups.set(s, []);
+    groups.get(s).push(r);
   }
-  lines.push('');
+  const lines = ['codex-doctor - Codex 环境自检', ''];
+  for (const section of ORDER) {
+    const items = groups.get(section);
+    if (!items) continue;
+    lines.push(`—— ${section} ——`);
+    for (const r of items) {
+      lines.push(`${sym[r.status]} ${r.detail}${r.doc ? `  → ${r.doc}` : ''}`);
+    }
+    lines.push('');
+  }
   lines.push(`======== 汇总：通过 ${summary.pass}   警告 ${summary.warn}   失败 ${summary.fail} ========`);
   lines.push('WARN/FAIL 项请对照 docs/ 下对应文档处理；提 Issue 时请附完整输出（脱敏后）。');
   return lines.join('\n');

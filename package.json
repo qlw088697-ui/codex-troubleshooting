@@ -1,7 +1,21 @@
 {
   "name": "@qqq123456789/codex-doctor",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Codex CLI 维护与排障工具：环境自检、会话/日志归档、配置与凭据备份恢复、版本追踪（零依赖）",
+  "keywords": [
+    "codex",
+    "codex-cli",
+    "openai",
+    "doctor",
+    "troubleshooting",
+    "diagnostics",
+    "cli",
+    "maintenance",
+    "agent",
+    "排障",
+    "维护"
+  ],
+  "homepage": "https://qlw088697-ui.github.io/codex-troubleshooting/",
   "type": "module",
   "bin": {
     "codex-doctor": "tool/cli.mjs"
