@@ -7,6 +7,10 @@
 
 | 版本 | 发布日期 | 预发布 | 说明 |
 |---|---|---|---|
+| [rust-v0.155.0-alpha.3.9](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.9) | 2026-09-11 | 是 | 0.155.0-alpha.3.9 |
+| [rust-v0.155.0-alpha.3.8](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.8) | 2026-09-11 | 是 | 0.155.0-alpha.3.8 |
+| [rust-v0.155.0-alpha.3.7](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.7) | 2026-09-11 | 是 | 0.155.0-alpha.3.7 |
+| [rust-v0.155.0-alpha.3.10](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.10) | 2026-09-11 | 是 | 0.155.0-alpha.3.10 |
 | [rust-v0.155.0-alpha.3](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3) | 2026-09-11 | 是 | 0.155.0-alpha.3 |
 | [rust-v0.154.0-alpha.6.2](https://github.com/openai/codex/releases/tag/rust-v0.154.0-alpha.6.2) | 2026-09-11 | 是 | 0.154.0-alpha.6.2 |
 | [python-v0.154.0](https://github.com/openai/codex/releases/tag/python-v0.154.0) | 2026-09-10 |  | Python SDK 0.154.0 |
@@ -53,7 +57,3 @@
 | [rust-v0.151.0-alpha.10](https://github.com/openai/codex/releases/tag/rust-v0.151.0-alpha.10) | 2026-08-28 | 是 | 0.151.0-alpha.10 |
 | [rust-v0.150.1](https://github.com/openai/codex/releases/tag/rust-v0.150.1) | 2026-08-27 |  | 0.150.1 |
 | [rust-v0.151.0-alpha.7](https://github.com/openai/codex/releases/tag/rust-v0.151.0-alpha.7) | 2026-08-27 | 是 | 0.151.0-alpha.7 |
-| [rust-v0.151.0-alpha.6](https://github.com/openai/codex/releases/tag/rust-v0.151.0-alpha.6) | 2026-08-27 | 是 | 0.151.0-alpha.6 |
-| [rust-v0.151.0-alpha.5](https://github.com/openai/codex/releases/tag/rust-v0.151.0-alpha.5) | 2026-08-27 | 是 | 0.151.0-alpha.5 |
-| [rust-v0.151.0-alpha.4](https://github.com/openai/codex/releases/tag/rust-v0.151.0-alpha.4) | 2026-08-27 | 是 | 0.151.0-alpha.4 |
-| [rust-v0.150.0-alpha.12.2](https://github.com/openai/codex/releases/tag/rust-v0.150.0-alpha.12.2) | 2026-08-27 | 是 | 0.150.0-alpha.12.2 |
