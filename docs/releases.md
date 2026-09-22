@@ -7,8 +7,18 @@
 
 | 版本 | 发布日期 | 预发布 | 说明 |
 |---|---|---|---|
+| [rust-v0.157.0-alpha.7](https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.7) | 2026-09-22 | 是 | 0.157.0-alpha.7 |
+| [rust-v0.157.0-alpha.6](https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.6) | 2026-09-22 | 是 | 0.157.0-alpha.6 |
+| [rust-v0.157.0-alpha.5](https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.5) | 2026-09-22 | 是 | 0.157.0-alpha.5 |
+| [rust-v0.157.0-alpha.4](https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.4) | 2026-09-22 | 是 | 0.157.0-alpha.4 |
+| [rust-v0.157.0-alpha.3](https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.3) | 2026-09-22 | 是 | 0.157.0-alpha.3 |
+| [rust-v0.157.0-alpha.2](https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.2) | 2026-09-21 | 是 | 0.157.0-alpha.2 |
+| [rust-v0.157.0-alpha.1](https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.1) | 2026-09-21 | 是 | 0.157.0-alpha.1 |
+| [rust-v0.156.0-alpha.17](https://github.com/openai/codex/releases/tag/rust-v0.156.0-alpha.17) | 2026-09-21 | 是 | 0.156.0-alpha.17 |
+| [rust-v0.156.0-alpha.16](https://github.com/openai/codex/releases/tag/rust-v0.156.0-alpha.16) | 2026-09-21 | 是 | 0.156.0-alpha.16 |
 | [rust-v0.156.0-alpha.14](https://github.com/openai/codex/releases/tag/rust-v0.156.0-alpha.14) | 2026-09-21 | 是 | 0.156.0-alpha.14 |
 | [rust-v0.156.0-alpha.13](https://github.com/openai/codex/releases/tag/rust-v0.156.0-alpha.13) | 2026-09-21 | 是 | 0.156.0-alpha.13 |
+| [rust-v0.155.0-alpha.16.1](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.16.1) | 2026-09-22 | 是 | 0.155.0-alpha.16.1 |
 | [rust-v0.156.0-alpha.12](https://github.com/openai/codex/releases/tag/rust-v0.156.0-alpha.12) | 2026-09-21 | 是 | 0.156.0-alpha.12 |
 | [rust-v0.156.0-alpha.11](https://github.com/openai/codex/releases/tag/rust-v0.156.0-alpha.11) | 2026-09-20 | 是 | 0.156.0-alpha.11 |
 | [rust-v0.156.0-alpha.10](https://github.com/openai/codex/releases/tag/rust-v0.156.0-alpha.10) | 2026-09-20 | 是 | 0.156.0-alpha.10 |
@@ -47,13 +57,3 @@
 | [rust-v0.155.0-alpha.3.8](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.8) | 2026-09-11 | 是 | 0.155.0-alpha.3.8 |
 | [rust-v0.155.0-alpha.3.7](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.7) | 2026-09-11 | 是 | 0.155.0-alpha.3.7 |
 | [rust-v0.155.0-alpha.3.10](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.10) | 2026-09-11 | 是 | 0.155.0-alpha.3.10 |
-| [rust-v0.155.0-alpha.3](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3) | 2026-09-11 | 是 | 0.155.0-alpha.3 |
-| [rust-v0.154.0-alpha.6.2](https://github.com/openai/codex/releases/tag/rust-v0.154.0-alpha.6.2) | 2026-09-11 | 是 | 0.154.0-alpha.6.2 |
-| [python-v0.154.0](https://github.com/openai/codex/releases/tag/python-v0.154.0) | 2026-09-10 |  | Python SDK 0.154.0 |
-| [voice-cygwin-108b38cf67cbb731](https://github.com/openai/codex/releases/tag/voice-cygwin-108b38cf67cbb731) | 2026-09-10 | 是 | Cygwin build inputs and matching source for Windows voice |
-| [rust-v0.155.0-alpha.2.3](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.2.3) | 2026-09-11 | 是 | 0.155.0-alpha.2.3 |
-| [rust-v0.155.0-alpha.2](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.2) | 2026-09-10 | 是 | 0.155.0-alpha.2 |
-| [rust-v0.155.0-alpha.1](https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.1) | 2026-09-10 | 是 | 0.155.0-alpha.1 |
-| [rust-v0.154.0](https://github.com/openai/codex/releases/tag/rust-v0.154.0) | 2026-09-09 |  | 0.154.0 |
-| [rust-v0.154.0-alpha.6.1](https://github.com/openai/codex/releases/tag/rust-v0.154.0-alpha.6.1) | 2026-09-09 | 是 | 0.154.0-alpha.6.1 |
-| [rust-v0.154.0-alpha.11](https://github.com/openai/codex/releases/tag/rust-v0.154.0-alpha.11) | 2026-09-09 | 是 | 0.154.0-alpha.11 |
