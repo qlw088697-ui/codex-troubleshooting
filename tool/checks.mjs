@@ -222,9 +222,26 @@ export async function collectChecks({ network = true } = {}) {
   add(
     'auth',
     exists(auth) ? 'ok' : 'warn',
-    exists(auth) ? 'auth.json 存在（内容不读取）' : 'auth.json 不存在——尚未登录或已清除，运行 codex login',
+    exists(auth) ? 'auth.json 存在' : 'auth.json 不存在——尚未登录或已清除，运行 codex login',
     'docs/02-login-auth.md'
   );
+
+  // 4a. auth.json 结构校验：文件存在但损坏/空壳是 401 循环的隐形原因（只看结构，不输出任何值）
+  if (exists(auth)) {
+    let j = null;
+    try {
+      j = JSON.parse(fs.readFileSync(auth, 'utf8'));
+    } catch {
+      j = null;
+    }
+    if (j === null || typeof j !== 'object') {
+      add('auth-structure', 'fail', 'auth.json 不是合法 JSON——文件疑似损坏（常见于同步盘截断、写一半崩溃），codex-doctor auth reset 重新登录', 'docs/02-login-auth.md');
+    } else if (!j.tokens?.id_token && !j.OPENAI_API_KEY) {
+      add('auth-structure', 'warn', 'auth.json 里没有任何登录凭据（tokens 缺失且 OPENAI_API_KEY 为空）——运行 codex login 或 codex-doctor auth reset', 'docs/02-login-auth.md');
+    } else {
+      add('auth-structure', 'ok', 'auth.json 结构正常（凭据存在，值不读取）');
+    }
+  }
 
   // 4b. 登录态有效期（解码 auth.json 中 id_token 的 exp 声明，不输出任何敏感内容）
   if (exists(auth)) {
@@ -411,7 +428,7 @@ export function renderHuman(results, summary) {
   const SECTION_OF = {
     codex: '基础环境', node: '基础环境', 'codex-newer': '基础环境',
     codexdir: '配置与凭据', 'codex-home': '配置与凭据', config: '配置与凭据', 'config-roots': '配置与凭据',
-    providers: '配置与凭据', relay: '配置与凭据', auth: '配置与凭据', 'auth-expiry': '配置与凭据',
+    providers: '配置与凭据', relay: '配置与凭据', auth: '配置与凭据', 'auth-structure': '配置与凭据', 'auth-expiry': '配置与凭据',
     'env-key': '环境变量', 'env-url': '环境变量', proxy: '环境变量', sysproxy: '环境变量',
     net: '网络',
     disk: '系统', onedrive: '系统坑位', 'wsl-state': '系统坑位', 'ps-policy': '系统坑位', sessions: '维护', logs: '维护',

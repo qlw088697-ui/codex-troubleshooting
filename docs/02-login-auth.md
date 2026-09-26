@@ -119,3 +119,10 @@ WSL 与 Windows 的 localhost 相互隔离：`codex login` 拉起的浏览器在
 ```
 
 > 🔒 这个文件等同密码：排障发帖、截图、求助时**务必脱敏**；换机器迁移时单独备份，不要提交进任何仓库。
+
+### auth.json 存在但凭据坏了——最隐蔽的 401 来源
+
+文件「存在」不等于「能用」，两种常见损坏形态（`codex-doctor doctor` 会直接检出）：
+
+- **不是合法 JSON**——写一半崩溃、同步盘截断（OneDrive 用户高发）。表现：`codex --version` 正常、一进对话就 401 循环。解法：`codex-doctor backup` 后 `codex-doctor auth reset` 重新登录；
+- **空壳**——`tokens` 整个缺失且 `OPENAI_API_KEY` 为 null（比如 logout 后残留、或手动编辑时删坏了）。表现：401 且 `/status` 里认证方式异常。解法：`codex login` 一次即可。

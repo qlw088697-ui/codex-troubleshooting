@@ -38,6 +38,7 @@
 
 ## 维护者备忘
 
+- **迭代待办**：后续方向统一记在 [ROADMAP.md](ROADMAP.md)，接续迭代先从那里挑活，做完勾掉并写 CHANGELOG；
 - **npm 自动发布**：已配置 Trusted Publishing（OIDC）。发布流程 = 升 `package.json` 版本 → 提交 → 打 `v*` 标签推送，工作流自动跑夹具测试并发布（版本没变自动跳过）。
 - **npm 发布 token**：`codex-doctor-publish`（Bypass 2FA / 90 天）2026-12-04 到期——到期只影响**本地手动** `npm publish`，不影响 CI 自动发布。需要手动发布时到 npmjs.com 重新生成即可。
 - **本地常用命令**：`npm test`（夹具测试）、`npm run check:links`（链接检查）、`npm run check:consistency`（结构一致性）。

@@ -119,3 +119,10 @@ WSL and Windows localhost are isolated: the browser that `codex login` opens aut
 ```
 
 > 🔒 This file is a password: always redact it before posting or screenshotting; when migrating machines, back it up separately and never commit it to any repository.
+
+### auth.json exists but the credentials inside are broken — the stealthiest 401 source
+
+"File exists" does not mean "file works". Two common corruption modes (`codex-doctor doctor` detects both):
+
+- **Not valid JSON** — half-written on crash, or truncated by a sync drive (common for OneDrive users). Symptom: `codex --version` is fine, but every message loops 401. Fix: `codex-doctor backup`, then `codex-doctor auth reset` and log in again;
+- **Empty shell** — `tokens` missing entirely and `OPENAI_API_KEY` null (left over after logout, or broken by manual editing). Symptom: 401 with an odd auth mode in `/status`. Fix: run `codex login` once.
