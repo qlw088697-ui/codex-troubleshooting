@@ -42,6 +42,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `logs --tail 50 [--file keyword]` | Print the last N lines of a log (newest by default, `--file` picks by name substring) | read-only |
 | `logs --search keyword [--all]` | Search logs for a keyword (newest file only by default, `--all` scans everything) | read-only |
 | `logs --errors [--all]` | Show only ERROR/WARN/PANIC/FATAL lines — run this to grab evidence before filing an issue | read-only |
+| `history [-n 20] [--search keyword]` | Browse the `~/.codex/history.jsonl` prompt history — find "that command you typed earlier" (corrupt lines skipped) | read-only |
 | `update` | Check the latest npm version and how to update | read-only |
 | `report [--out FILE]` | One-shot redacted evidence report (Markdown): doctor checks + config summary + error log lines + 7-day usage; keys/tokens/emails auto-masked — run it before filing an issue | read-only (writes one report file) |
 

@@ -5,7 +5,7 @@
 
 ## 工具 codex-doctor
 
-- [ ] `history` 命令：浏览 `~/.codex/history.jsonl` 输入历史（找回"刚才想用的那条命令"）
+- [x] `history` 命令：浏览 `~/.codex/history.jsonl` 输入历史（找回"刚才想用的那条命令"）——v1.24.0 完成
 - [ ] doctor：MCP server 启动冒烟检查（spawn 一次看是否秒退）——注意耗时与误报控制
 - [ ] `report --days N`：控制日志与用量取证窗口；`--open` 生成后直接用系统默认程序打开
 - [ ] `sessions --stats --top N`：按总消耗排序，快速定位"最烧钱的会话"

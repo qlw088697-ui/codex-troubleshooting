@@ -4,6 +4,17 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.24.0] - 2026-09-26
+
+### 新增
+
+- codex-doctor CLI **1.7.0**
+- `history` 命令：浏览 `~/.codex/history.jsonl` 输入历史（`--search` 过滤、坏行自动跳过、最新在前）——「找回」三件套补齐：sessions 找回对话、logs 找回报错、history 找回输入
+
+### 文档
+
+- ROADMAP 勾选 `history` 项；README/13 同步
+
 ## [1.23.0] - 2026-09-26
 
 ### 新增

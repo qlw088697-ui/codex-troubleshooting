@@ -57,7 +57,7 @@ npx -y @qqq123456789/codex-doctor doctor      # 环境自检
 npx -y @qqq123456789/codex-doctor --help      # 查看全部命令
 ```
 
-环境自检、会话/日志归档（预演制）、日志查看取证、会话用量统计、脱敏取证报告、配置与凭据备份恢复、归档管理、版本追踪——详见 [13 · codex-doctor CLI](docs/13-codex-doctor.md)。
+环境自检、会话/日志归档（预演制）、日志查看取证、会话用量统计、脱敏取证报告、输入历史找回、配置与凭据备份恢复、归档管理、版本追踪——详见 [13 · codex-doctor CLI](docs/13-codex-doctor.md)。
 
 ## 症状速查导航
 

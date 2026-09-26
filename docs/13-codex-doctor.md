@@ -42,6 +42,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `logs --tail 50 [--file 关键字]` | 查看日志末尾 N 行（默认最新一个文件，`--file` 按文件名关键字选择） | 只读 |
 | `logs --search 关键词 [--all]` | 在日志里搜关键词（默认只搜最新一个，`--all` 扫全部日志） | 只读 |
 | `logs --errors [--all]` | 一键过滤 ERROR/WARN/PANIC/FATAL 级别行——提 Issue 前先跑它取证 | 只读 |
+| `history [-n 20] [--search 关键词]` | 浏览 `~/.codex/history.jsonl` 输入历史，找回「刚才想用的那条命令」（坏行自动跳过） | 只读 |
 | `update` | 查询 npm 上工具的最新版本与更新方式 | 只读 |
 | `report [--out FILE]` | 一键生成脱敏取证报告（Markdown）：环境自检 + 配置摘要 + 报错日志 + 7 天用量，Key/token/邮箱自动打码——提 Issue 前跑它 | 只读（写出一个报告文件） |
 

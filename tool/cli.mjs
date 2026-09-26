@@ -6,11 +6,12 @@ import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, del
 import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown, sessionStats } from './sessions.mjs';
 import { listLogs, resolveLogFile, tailLog, searchLogs, errorLines } from './logs.mjs';
 import { buildReport } from './report.mjs';
+import { listHistory } from './history.mjs';
 import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.6.0';
+const VERSION = '1.7.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -39,6 +40,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
         --tail N [--file 关键字]  查看日志末尾 N 行（默认最新一个文件，N 默认 50）
         --search 关键词 [--all]   在日志里搜关键词（默认最新一个，--all 扫全部日志）
         --errors [--all]          只看 ERROR/WARN/PANIC/FATAL 级别行（提 Issue 前取证）
+  history [-n N] [--search 关键词] 浏览输入历史（history.jsonl，找回「刚才想用的那条命令」）
   update                        查询 npm 最新版本与更新方式
   report [--out FILE]           一键生成脱敏取证报告（Markdown）：doctor + config + 报错日志 + 用量
   help                          显示本帮助
@@ -303,6 +305,26 @@ async function main() {
         console.log(`${it.mtime.padEnd(18)} ${fmtSize(it.bytes).padStart(9)}  ${it.rel}`);
       }
       console.log('\n--tail N 看末尾 / --search 关键词 / --errors 只看报错级别行（--file 按文件名选）');
+      break;
+    }
+    case 'history': {
+      const { items, total, corrupt, missing } = listHistory({
+        limit: Number.isFinite(flags.limit) ? flags.limit : 20,
+        keyword: flags.search,
+      });
+      if (missing) {
+        console.log('~/.codex/history.jsonl 不存在（还没产生输入历史；未开启记录时可查 config 的 [history] persistence 配置）');
+        break;
+      }
+      if (items.length === 0) {
+        console.log(flags.search ? `没有匹配「${flags.search}」的输入历史` : 'history.jsonl 里没有输入历史');
+        break;
+      }
+      console.log('时间                输入');
+      for (const it of items) console.log(`${it.time.padEnd(18)} ${it.text}`);
+      const notes = [`共 ${total} 条${flags.search ? '匹配' : ''}`];
+      if (corrupt > 0) notes.push(`${corrupt} 条坏行已跳过`);
+      console.log(`\n${notes.join('，')}（-n 条数 / --search 关键词过滤）`);
       break;
     }
     case 'config': {
