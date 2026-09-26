@@ -22,7 +22,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 
 | Command | Purpose | Risk |
 |---|---|---|
-| `doctor` | Full environment check (**relay-aware**, codex outdated-version detection, MCP command availability, Windows execution policy & system proxy, OneDrive pitfalls, login-state expiry; `--no-network` skips probes, `--json` for scripts, `--strict` fails on warnings) | read-only |
+| `doctor` | Full environment check (**relay-aware**, codex outdated-version detection, MCP command availability, Windows execution policy & system proxy, OneDrive pitfalls, login-state expiry, log directory size; `--no-network` skips probes, `--json` for scripts, `--strict` fails on warnings) | read-only |
 | `clean sessions [--days 30]` | Archive session files older than N days (**dry-run by default**, `--yes` to execute) | low (archive, not delete) |
 | `clean logs [--days 14]` | Same, for logs | low |
 | `backup [--out DIR]` | Back up config.toml + auth.json into a timestamped directory | read-only |
@@ -35,6 +35,10 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `sessions [-n 10] [--dir keyword]` | Browse past sessions: time, workdir, source, first-prompt preview; `--dir` filters by directory — find "that conversation" | read-only |
 | `sessions --search keyword [--deep]` | Search sessions by keyword (first 256KB of each file by default, `--deep` scans fully) | read-only |
 | `sessions --show [--search keyword] [--pick N] [--full]` | Print a session's full transcript (latest by default; messages truncated to 400 chars unless `--full`) | read-only |
+| `logs [-n 10]` | List log files under `~/.codex/log/` (time, size) | read-only |
+| `logs --tail 50 [--file keyword]` | Print the last N lines of a log (newest by default, `--file` picks by name substring) | read-only |
+| `logs --search keyword [--all]` | Search logs for a keyword (newest file only by default, `--all` scans everything) | read-only |
+| `logs --errors [--all]` | Show only ERROR/WARN/PANIC/FATAL lines — run this to grab evidence before filing an issue | read-only |
 | `update` | Check the latest npm version and how to update | read-only |
 
 ## Design principles
@@ -60,6 +64,9 @@ codex-doctor clean sessions --days 30 --yes
 codex-doctor backup
 # on the new machine
 codex-doctor restore ~/.codex-backups/2026-08-31-10-00-00
+
+# grab evidence before filing an issue (logs carry far more context than the terminal)
+codex-doctor logs --errors
 ```
 
 ## Relation to scripts/

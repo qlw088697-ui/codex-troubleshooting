@@ -57,7 +57,7 @@ npx -y @qqq123456789/codex-doctor doctor      # 环境自检
 npx -y @qqq123456789/codex-doctor --help      # 查看全部命令
 ```
 
-环境自检、会话/日志归档（预演制）、配置与凭据备份恢复、归档管理、版本追踪——详见 [13 · codex-doctor CLI](docs/13-codex-doctor.md)。
+环境自检、会话/日志归档（预演制）、日志查看取证、配置与凭据备份恢复、归档管理、版本追踪——详见 [13 · codex-doctor CLI](docs/13-codex-doctor.md)。
 
 ## 症状速查导航
 
@@ -115,7 +115,7 @@ tool/
 1. **确认版本**：`codex --version`，老版本先升级（很多 bug 是版本-specific 的）；
 2. **确认状态**：在 Codex 交互界面输入 `/status`，核对当前模型、provider、审批/沙箱模式是不是你以为的那样；
 3. **跑自检脚本**：`scripts/codex-doctor`，重点看网络连通性和配置文件检查项；
-4. **看日志**：`~/.codex/log/` 下有运行日志，报错上下文往往比终端一句话详细得多；
+4. **看日志**：`~/.codex/log/` 下有运行日志，报错上下文往往比终端一句话详细得多（`codex-doctor logs --errors` 一键过滤报错行）；
 5. **最小化复现**：换一个空目录 + 备份并移走 `~/.codex/config.toml` 后重新登录测试，排除配置残留干扰（[09 日常维护](docs/09-maintenance.md)）。
 
 ## 如何贡献

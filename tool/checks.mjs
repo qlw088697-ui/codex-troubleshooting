@@ -373,6 +373,19 @@ export async function collectChecks({ network = true } = {}) {
     );
   }
 
+  // 10b. log 目录体积（顺手提示一键取证命令）
+  const logDir = path.join(CODEX_DIR, 'log');
+  if (exists(logDir)) {
+    const mb = dirBytes(logDir) / 1024 / 1024;
+    if (mb >= 100) {
+      add('logs', 'warn', `log 目录约 ${mb.toFixed(1)} MB——可先 codex-doctor logs --errors 取证，再 clean logs 归档`, 'docs/09-maintenance.md');
+    } else if (mb > 0) {
+      add('logs', 'ok', `log 目录约 ${mb.toFixed(1)} MB`);
+    } else {
+      add('logs', 'info', 'log 目录为空（尚未产生日志）');
+    }
+  }
+
   return results;
 }
 
@@ -394,7 +407,7 @@ export function renderHuman(results, summary) {
     providers: '配置与凭据', relay: '配置与凭据', auth: '配置与凭据', 'auth-expiry': '配置与凭据',
     'env-key': '环境变量', 'env-url': '环境变量', proxy: '环境变量', sysproxy: '环境变量',
     net: '网络',
-    disk: '系统', onedrive: '系统坑位', 'wsl-state': '系统坑位', 'ps-policy': '系统坑位', sessions: '维护',
+    disk: '系统', onedrive: '系统坑位', 'wsl-state': '系统坑位', 'ps-policy': '系统坑位', sessions: '维护', logs: '维护',
   };
   const ORDER = ['基础环境', '配置与凭据', '环境变量', '网络', '系统', '系统坑位', '维护', '其他'];
   const groups = new Map();

@@ -51,5 +51,6 @@
 2. /status                  ← 当前 model / provider / 沙箱模式是否符合预期
 3. 跑自检脚本                ← scripts/codex-doctor
 4. 看日志 ~/.codex/log/      ← 报错上下文比终端一句话详细
+   （codex-doctor logs --errors 一键过滤报错行）
 5. 最小化复现                ← 空目录 + 移走 config.toml 重登测试
 ```

@@ -4,11 +4,12 @@ import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
 import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown } from './sessions.mjs';
+import { listLogs, resolveLogFile, tailLog, searchLogs, errorLines } from './logs.mjs';
 import { configSummary } from './config.mjs';
-import { CODEX_DIR } from './util.mjs';
+import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -32,6 +33,10 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   sessions [-n N] [--dir 关键字] 浏览历史会话：时间、目录、来源、首条提问预览
              [--search 关键词] [--deep] 按关键词搜索会话（--deep 全文扫描）
              --show [--search 关键词] [--pick N] [--full] 查看会话完整对话
+  logs [-n N]                   列出 ~/.codex/log/ 下的日志文件（时间 / 大小）
+        --tail N [--file 关键字]  查看日志末尾 N 行（默认最新一个文件，N 默认 50）
+        --search 关键词 [--all]   在日志里搜关键词（默认最新一个，--all 扫全部日志）
+        --errors [--all]          只看 ERROR/WARN/PANIC/FATAL 级别行（提 Issue 前取证）
   update                        查询 npm 最新版本与更新方式
   help                          显示本帮助
 
@@ -55,6 +60,10 @@ function parseFlags(args) {
     else if (a === '--pick') flags.pick = Number(args[++i]);
     else if (a === '--full') flags.full = true;
     else if (a === '--out') flags.out = args[++i];
+    else if (a === '--tail') flags.tail = Number(args[++i]);
+    else if (a === '--file') flags.file = args[++i];
+    else if (a === '--errors') flags.errors = true;
+    else if (a === '--all') flags.all = true;
     else rest.push(a);
   }
   return { flags, rest };
@@ -62,6 +71,12 @@ function parseFlags(args) {
 
 function print(lines) {
   for (const l of lines) console.log(l);
+}
+
+function fmtSize(bytes) {
+  if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  if (bytes >= 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return `${bytes} B`;
 }
 
 async function main() {
@@ -130,7 +145,9 @@ async function main() {
         break;
       }
       if (sub === 'delete') {
-        const r = await deleteArchive(rest[1], { all: rest[1] === '--all', yes: flags.yes === true });
+        // --all 既可作旗标解析，也兼容放在位置参数上
+        const allFlag = flags.all === true || rest[1] === '--all';
+        const r = await deleteArchive(rest[1], { all: allFlag, yes: flags.yes === true });
         print(r.lines);
         if (r.bad) process.exitCode = 1;
         break;
@@ -209,6 +226,51 @@ async function main() {
         );
       }
       console.log(`\n会话文件位于 ${path.join(CODEX_DIR, 'sessions')}（-n 条数 / --dir 按目录关键字过滤）`);
+      break;
+    }
+    case 'logs': {
+      // 三种聚焦视图：--tail / --search / --errors；都不带则列出日志文件
+      if (flags.tail !== undefined) {
+        const it = resolveLogFile(flags.file);
+        if (!it) {
+          console.log(exists(path.join(CODEX_DIR, 'log')) ? '没有匹配的日志文件（--file 按文件名关键字选择）' : '~/.codex/log 里没有日志文件');
+          break;
+        }
+        const n = Number.isFinite(flags.tail) && flags.tail > 0 ? flags.tail : 50;
+        console.log(`== ${it.rel}（${it.mtime}，${fmtSize(it.bytes)}）==`);
+        for (const l of tailLog(it.file, n)) console.log(l);
+        break;
+      }
+      if (flags.search || flags.errors) {
+        if (listLogs({ limit: 1 }).length === 0) {
+          console.log('~/.codex/log 里没有日志文件（还没跑过 codex，或日志已被清理/归档）');
+          break;
+        }
+        const hits = flags.search
+          ? searchLogs({ keyword: flags.search, all: flags.all === true, file: flags.file, limit: 40 })
+          : errorLines({ all: flags.all === true, file: flags.file, limit: 40 });
+        if (hits.length === 0) {
+          console.log(
+            flags.search
+              ? `日志里没有「${flags.search}」${flags.all ? '' : '（默认只搜最新一个日志，--all 扫全部）'}`
+              : `没有 ERROR/WARN 级别行${flags.all ? '' : '（默认只看最新一个日志，--all 扫全部）'}`
+          );
+          break;
+        }
+        if (hits[0].truncated) console.log('（日志超过 128MB，只扫描了末尾部分）');
+        for (const h of hits) console.log(`${h.file}:${h.line}: ${h.text}`);
+        break;
+      }
+      const items = listLogs({ limit: Number.isFinite(flags.limit) ? flags.limit : 10 });
+      if (items.length === 0) {
+        console.log('~/.codex/log 里没有日志文件（还没跑过 codex，或日志已被清理/归档）');
+        break;
+      }
+      console.log('时间                大小        文件');
+      for (const it of items) {
+        console.log(`${it.mtime.padEnd(18)} ${fmtSize(it.bytes).padStart(9)}  ${it.rel}`);
+      }
+      console.log('\n--tail N 看末尾 / --search 关键词 / --errors 只看报错级别行（--file 按文件名选）');
       break;
     }
     case 'config': {

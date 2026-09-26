@@ -49,5 +49,6 @@
 2. /status                  ← current model / provider / sandbox as expected?
 3. run the doctor script     ← scripts/codex-doctor.sh or .ps1
 4. check ~/.codex/log/       ← far more context than the terminal line
+   (or: codex-doctor logs --errors to filter error lines in one shot)
 5. minimal repro             ← empty dir + move config.toml aside + re-login
 ```

@@ -32,7 +32,7 @@ curl -fsSL https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/
 irm https://raw.githubusercontent.com/qlw088697-ui/codex-troubleshooting/main/scripts/codex-doctor.ps1 | iex
 ```
 
-Prefer a CLI? `npx -y @qqq123456789/codex-doctor doctor` — zero-dependency, with cleanup/backup/archive-management/version commands too. See [13 codex-doctor CLI](docs/13-codex-doctor.en.md).
+Prefer a CLI? `npx -y @qqq123456789/codex-doctor doctor` — zero-dependency, with log viewing, cleanup/backup/archive-management/version commands too. See [13 codex-doctor CLI](docs/13-codex-doctor.en.md).
 
 ## Symptom → doc map
 
@@ -60,7 +60,7 @@ Guides are written in Chinese (commands and error strings are universal):
 1. **Version**: run `codex --version` — upgrade first, many bugs are version-specific;
 2. **State**: in the TUI run `/status` — confirm the model, provider, approval & sandbox mode are what you think they are;
 3. **Doctor**: run `scripts/codex-doctor` — it covers connectivity and the classic config mistakes;
-4. **Logs**: check `~/.codex/log/` — far more context than the one-line terminal error;
+4. **Logs**: check `~/.codex/log/` — far more context than the one-line terminal error (`codex-doctor logs --errors` filters error lines in one shot);
 5. **Minimal repro**: empty directory + move `~/.codex/config.toml` aside + re-login ([09](docs/09-maintenance.en.md)).
 
 ## Repo layout
