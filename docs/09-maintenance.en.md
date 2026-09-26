@@ -14,7 +14,7 @@ English | [中文](09-maintenance.md)
 └── sessions/      # session history (grows with usage)
 ```
 
-Directory contents vary slightly between versions; trust what you actually see.
+Directory contents vary slightly between versions; trust what you actually see. For the per-item "what it is / can I delete it" reference, see [14 · Anatomy of `~/.codex`](14-codex-home-anatomy.en.md).
 
 ## Version strategy & upgrading
 

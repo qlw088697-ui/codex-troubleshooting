@@ -15,6 +15,7 @@
   - [11 效率技巧](docs/11-tips.md)
   - [12 实战演练](docs/12-walkthrough.md)
   - [13 codex-doctor CLI](docs/13-codex-doctor.md)
+  - [14 ~/.codex 解剖](docs/14-codex-home-anatomy.md)
   - [版本追踪](docs/releases.md)
 
 - English
@@ -32,6 +33,7 @@
   - [11 Efficiency tips](docs/11-tips.en.md)
   - [12 Walkthrough](docs/12-walkthrough.en.md)
   - [13 codex-doctor CLI](docs/13-codex-doctor.en.md)
+  - [14 ~/.codex anatomy](docs/14-codex-home-anatomy.en.md)
 
 - 参与
   - [贡献指南](CONTRIBUTING.md)

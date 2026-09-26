@@ -52,6 +52,7 @@ Guides are written in Chinese (commands and error strings are universal):
 | Use Codex faster & cheaper (commands / project memory / scripting) | [11 Efficiency tips](docs/11-tips.en.md) |
 | Full walkthrough: build a project from scratch with Codex | [12 Walkthrough](docs/12-walkthrough.en.md) |
 | Want one command for checks / cleanup / backups | [13 codex-doctor CLI](docs/13-codex-doctor.en.md) |
+| What's inside `~/.codex`, and what's safe to touch | [14 ~/.codex anatomy](docs/14-codex-home-anatomy.en.md) |
 | Cleanup / backup / migrate to a new machine / full reset | [09 Maintenance](docs/09-maintenance.en.md) |
 | Track new Codex releases | [Release tracker](docs/releases.md) (auto-updated weekly by CI) |
 
@@ -66,7 +67,7 @@ Guides are written in Chinese (commands and error strings are universal):
 ## Repo layout
 
 ```
-docs/        thirteen topic guides, fully bilingual (中文 + English) + releases.md (auto tracker)
+docs/        fourteen topic guides, fully bilingual (中文 + English) + releases.md (auto tracker)
 scripts/     standalone self-check scripts (ps1/sh) + CI checkers + release-tracker generator
 tool/        codex-doctor CLI — zero-dependency maintenance tool (doctor / clean / backup / restore / versions)
 index.html   docsify site (served via GitHub Pages)
