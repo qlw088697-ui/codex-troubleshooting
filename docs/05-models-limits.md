@@ -22,6 +22,8 @@
 
 > 💡 **每周限额是「滚动 7 天窗口」，不是自然周**——重置时间看起来每天往后「漂移」是设计如此，不是 bug。此外官方已提供弹性重置能力（可在 ChatGPT 侧按需触发限额重置，入口以产品为准）。参考：[社区讨论：weekly limit ran out](https://community.openai.com/t/weekly-limit-ran-out-even-though-i-never-hit-the-5-hour-limit/1376981)。
 
+> 💡 想知道额度花在哪：`codex-doctor sessions --stats --days 7` 按会话汇总最近 7 天的 token 用量（详见 [13](13-codex-doctor.md)）。
+
 **API Key（429）：**
 
 1. `insufficient_quota` → 账户余额/额度不足，去平台充值；

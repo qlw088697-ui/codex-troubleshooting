@@ -3,13 +3,13 @@
 import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
-import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown } from './sessions.mjs';
+import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown, sessionStats } from './sessions.mjs';
 import { listLogs, resolveLogFile, tailLog, searchLogs, errorLines } from './logs.mjs';
 import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -33,6 +33,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   sessions [-n N] [--dir 关键字] 浏览历史会话：时间、目录、来源、首条提问预览
              [--search 关键词] [--deep] 按关键词搜索会话（--deep 全文扫描）
              --show [--search 关键词] [--pick N] [--full] 查看会话完整对话
+             --stats [--days 7]  会话用量统计：输入/输出/合计 tokens（429 自查）
   logs [-n N]                   列出 ~/.codex/log/ 下的日志文件（时间 / 大小）
         --tail N [--file 关键字]  查看日志末尾 N 行（默认最新一个文件，N 默认 50）
         --search 关键词 [--all]   在日志里搜关键词（默认最新一个，--all 扫全部日志）
@@ -64,6 +65,7 @@ function parseFlags(args) {
     else if (a === '--file') flags.file = args[++i];
     else if (a === '--errors') flags.errors = true;
     else if (a === '--all') flags.all = true;
+    else if (a === '--stats') flags.stats = true;
     else rest.push(a);
   }
   return { flags, rest };
@@ -157,6 +159,34 @@ async function main() {
       break;
     }
     case 'sessions': {
+      if (flags.stats) {
+        // 用量统计：窗口内每个会话的累计 tokens + 汇总（429 自查）
+        const days = Number.isFinite(flags.days) && flags.days > 0 ? flags.days : 7;
+        const { items, totals, skipped } = sessionStats({ days, cwdFilter: flags.dir || null });
+        if (items.length === 0) {
+          console.log(
+            `最近 ${days} 天没有带用量数据的会话${flags.dir ? `（--dir ${flags.dir}）` : ''}${
+              skipped > 0 ? `；另有 ${skipped} 个会话无 token 统计（旧版本或已截断）` : ''
+            }`
+          );
+          break;
+        }
+        const fmt = (n) => n.toLocaleString('en-US');
+        console.log('时间                工作目录                    输入 tokens  输出 tokens  合计 tokens');
+        const rows = items.slice(0, Number.isFinite(flags.limit) && flags.limit > 0 ? flags.limit : 15);
+        for (const it of rows) {
+          console.log(
+            `${it.date.padEnd(18)} ${it.dirName.padEnd(24).slice(0, 24)} ${fmt(it.input).padStart(12)} ${fmt(it.output).padStart(13)} ${fmt(it.total).padStart(13)}`
+          );
+        }
+        if (items.length > rows.length) console.log(`（仅显示最近 ${rows.length} 个会话，-n 调整；汇总按全部 ${items.length} 个计）`);
+        console.log(
+          `\n—— 合计（最近 ${days} 天，${items.length} 个会话）：输入 ${fmt(totals.input)} / 输出 ${fmt(totals.output)} / 总计 ${fmt(totals.total)} tokens（缓存读取 ${fmt(totals.cached)}）`
+        );
+        if (skipped > 0) console.log(`（另有 ${skipped} 个会话无 token 统计，未计入——旧版本会话或文件被截断属正常）`);
+        console.log('统计口径：每个会话取最后一条 token_count 的累计值；限额与重置时间以 /status 为准（见 docs/05）');
+        break;
+      }
       if (flags.show) {
         // 展示会话完整对话：默认最近一次；--search 按关键词定位；--pick N 选第 N 个命中
         const items = flags.search

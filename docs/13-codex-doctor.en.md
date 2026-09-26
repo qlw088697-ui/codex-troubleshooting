@@ -35,6 +35,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `sessions [-n 10] [--dir keyword]` | Browse past sessions: time, workdir, source, first-prompt preview; `--dir` filters by directory — find "that conversation" | read-only |
 | `sessions --search keyword [--deep]` | Search sessions by keyword (first 256KB of each file by default, `--deep` scans fully) | read-only |
 | `sessions --show [--search keyword] [--pick N] [--full]` | Print a session's full transcript (latest by default; messages truncated to 400 chars unless `--full`) | read-only |
+| `sessions --stats [--days 7] [--dir keyword]` | Session usage stats: input/output/total tokens per session plus window totals — self-check for 429s and where the quota went | read-only |
 | `logs [-n 10]` | List log files under `~/.codex/log/` (time, size) | read-only |
 | `logs --tail 50 [--file keyword]` | Print the last N lines of a log (newest by default, `--file` picks by name substring) | read-only |
 | `logs --search keyword [--all]` | Search logs for a keyword (newest file only by default, `--all` scans everything) | read-only |
@@ -67,6 +68,9 @@ codex-doctor restore ~/.codex-backups/2026-08-31-10-00-00
 
 # grab evidence before filing an issue (logs carry far more context than the terminal)
 codex-doctor logs --errors
+
+# close to the limit? see which sessions consumed the last 7 days
+codex-doctor sessions --stats --days 7
 ```
 
 ## Relation to scripts/

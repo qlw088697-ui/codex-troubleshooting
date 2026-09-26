@@ -35,6 +35,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `sessions [-n 10] [--dir 关键字]` | 浏览历史会话：时间、工作目录、来源、首条提问预览；`--dir` 按目录过滤，找回「上次那个对话」 | 只读 |
 | `sessions --search 关键词 [--deep]` | 按关键词搜索会话（默认搜每个文件开头 256KB，`--deep` 全文扫描） | 只读 |
 | `sessions --show [--search 关键词] [--pick N] [--full]` | 查看会话完整对话（默认最近一次；默认单条截断 400 字） | 只读 |
+| `sessions --stats [--days 7] [--dir 关键字]` | 会话用量统计：每个会话的输入/输出/合计 tokens 与窗口内总计——429 自查、看额度花在哪 | 只读 |
 | `logs [-n 10]` | 列出 `~/.codex/log/` 下的日志文件（时间、大小） | 只读 |
 | `logs --tail 50 [--file 关键字]` | 查看日志末尾 N 行（默认最新一个文件，`--file` 按文件名关键字选择） | 只读 |
 | `logs --search 关键词 [--all]` | 在日志里搜关键词（默认只搜最新一个，`--all` 扫全部日志） | 只读 |
@@ -67,6 +68,9 @@ codex-doctor restore ~/.codex-backups/2026-08-31-10-00-00
 
 # 提 Issue 前快速取证（报错上下文比终端一行话详细得多）
 codex-doctor logs --errors
+
+# 额度快花完时，看看最近 7 天用量都花在哪些会话
+codex-doctor sessions --stats --days 7
 ```
 
 ## 与 scripts/ 下自检脚本的关系

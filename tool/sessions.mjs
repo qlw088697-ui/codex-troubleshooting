@@ -180,3 +180,94 @@ export function exportTranscriptMarkdown(file, outFile, { maxLen = 400 } = {}) {
   fs.writeFileSync(dest, lines.join('\n'), 'utf8');
   return { outFile: dest, count: transcript.length };
 }
+
+// 读文件末尾至多 bytes 字节（用于取最后一条 token_count，避免整读大文件）
+function readTailBytes(file, bytes = 1048576) {
+  const fd = fs.openSync(file, 'r');
+  try {
+    const size = fs.fstatSync(fd).size;
+    const len = Math.min(size, bytes);
+    const buf = Buffer.alloc(len);
+    fs.readSync(fd, buf, 0, len, size - len);
+    const text = buf.toString('utf8');
+    // 从中间起读时丢掉首个不完整行
+    return size > len ? text.slice(text.indexOf('\n') + 1) : text;
+  } finally {
+    fs.closeSync(fd);
+  }
+}
+
+// 单个会话的用量：取最后一条 token_count 事件的累计值（旧版本会话无此事件则返回 null）
+function scanUsage(file) {
+  let usage = null;
+  for (const line of readTailBytes(file).split('\n')) {
+    if (!line.includes('token_count')) continue;
+    let j;
+    try {
+      j = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (j.type === 'event_msg' && j.payload?.type === 'token_count' && j.payload?.info?.total_token_usage) {
+      const t = j.payload.info.total_token_usage;
+      usage = {
+        input: t.input_tokens || 0,
+        cached: t.cached_input_tokens || 0,
+        output: t.output_tokens || 0,
+        total: t.total_tokens || 0,
+      };
+    }
+  }
+  return usage;
+}
+
+// 用量统计：--days 窗口内（按 mtime）的会话各自累计 tokens，用于 429 自查
+export function sessionStats({ days = 7, cwdFilter = null } = {}) {
+  const root = path.join(CODEX_DIR, 'sessions');
+  if (!exists(root)) return { items: [], totals: null, skipped: 0 };
+  const cutoffMs = Date.now() - Math.max(Number(days) || 7, 1) * 86400e3;
+  const items = [];
+  let skipped = 0;
+  for (const f of walkFiles(root)) {
+    if (!f.endsWith('.jsonl')) continue;
+    let st;
+    try {
+      st = fs.statSync(f);
+    } catch {
+      continue;
+    }
+    if (st.mtimeMs < cutoffMs) continue;
+    let usage;
+    try {
+      usage = scanUsage(f);
+    } catch {
+      continue;
+    }
+    if (!usage) {
+      skipped++;
+      continue;
+    }
+    const { meta } = extract(readHead(f));
+    if (cwdFilter && !(meta?.cwd || '').toLowerCase().includes(String(cwdFilter).toLowerCase())) continue;
+    items.push({
+      file: f,
+      date: meta?.date || new Date(st.mtimeMs).toISOString().slice(0, 16).replace('T', ' '),
+      dirName: meta?.cwd ? path.basename(meta.cwd) : '?',
+      ...usage,
+      mtimeMs: st.mtimeMs,
+    });
+  }
+  items.sort((a, b) => b.mtimeMs - a.mtimeMs);
+  const totals = items.length
+    ? items.reduce(
+        (acc, it) => ({
+          input: acc.input + it.input,
+          cached: acc.cached + it.cached,
+          output: acc.output + it.output,
+          total: acc.total + it.total,
+        }),
+        { input: 0, cached: 0, output: 0, total: 0 }
+      )
+    : null;
+  return { items, totals, skipped };
+}

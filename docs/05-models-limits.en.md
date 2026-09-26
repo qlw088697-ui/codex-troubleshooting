@@ -22,6 +22,8 @@ English | [中文](05-models-limits.md)
 
 > 💡 **The weekly limit is a rolling 7-day window, not a calendar week** — the reset time "drifting" forward every day is by design, not a bug. OpenAI has also added flexible on-demand limit resets (triggered from the ChatGPT side; entry point depends on the product). Reference: [community thread: weekly limit ran out](https://community.openai.com/t/weekly-limit-ran-out-even-though-i-never-hit-the-5-hour-limit/1376981).
 
+> 💡 Wondering where the quota went: `codex-doctor sessions --stats --days 7` summarizes token usage per session over the last 7 days (see [13](13-codex-doctor.en.md)).
+
 **API key (429):**
 
 1. `insufficient_quota` → account out of credit; top up on the platform;
