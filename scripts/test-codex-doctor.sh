@@ -25,7 +25,7 @@ const fs = require('fs');
 const d = JSON.parse(fs.readFileSync(process.env.FIX + '/doctor.json', 'utf8'));
 const r = (d.results || []).find(x => x.id === 'config-roots');
 if (!r || r.status !== 'warn') process.exit(1);
-console.log('ok 1/20: doctor 识别根级键位置问题');
+console.log('ok 1/21: doctor 识别根级键位置问题');
 "
 
 # 2) clean 预演：列出现旧文件、不移动任何东西
@@ -33,31 +33,31 @@ OUT=$(cli clean sessions --days 30)
 echo "$OUT" | grep -q "old.jsonl" || fail "预演未列出旧文件"
 echo "$OUT" | grep -q "预演模式" || fail "未进入预演模式"
 [ -f "$FIX/.codex/sessions/2026/01/old.jsonl" ] || fail "预演模式不应移动文件"
-echo "ok 2/20: clean 预演"
+echo "ok 2/21: clean 预演"
 
 # 3) clean --yes：归档保持相对结构，原位置清空
 cli clean sessions --days 30 --yes > /dev/null
 [ -f "$FIX"/.codex/archive/sessions-*/2026/01/old.jsonl ] || fail "归档文件缺失"
 [ ! -f "$FIX/.codex/sessions/2026/01/old.jsonl" ] || fail "原文件未移除"
-echo "ok 3/20: clean 归档"
+echo "ok 3/21: clean 归档"
 
 # 4) backup / restore 往返
 cli backup --out "$FIX/bk" > /dev/null
 rm "$FIX/.codex/auth.json"
 cli restore "$FIX/bk" > /dev/null
 [ -f "$FIX/.codex/auth.json" ] || fail "恢复后 auth.json 缺失"
-echo "ok 4/20: backup/restore 往返"
+echo "ok 4/21: backup/restore 往返"
 
 # 5) help 与未知命令
 cli help | grep -q "codex-doctor" || fail "help 输出异常"
 cli definitely-not-a-command >/dev/null 2>&1 && fail "未知命令应返回非零退出码" || true
-echo "ok 5/20: help 与未知命令"
+echo "ok 5/21: help 与未知命令"
 
 # 6) archive 管理：list 显示归档目录、delete --all 清空
 cli archive list | grep -q "sessions-" || fail "archive list 未显示归档目录"
 cli archive delete --all --yes > /dev/null
 [ -z "$(ls -A "$FIX/.codex/archive" 2>/dev/null)" ] || fail "archive delete 未清空归档"
-echo "ok 6/20: archive 管理"
+echo "ok 6/21: archive 管理"
 
 # 7) 中转模式感知：--no-network 下也应识别 provider 的 base_url
 cli doctor --no-network --json > "$FIX/doctor2.json" || true
@@ -66,7 +66,7 @@ const fs = require('fs');
 const d = JSON.parse(fs.readFileSync(process.env.FIX + '/doctor2.json', 'utf8'));
 const r = (d.results || []).find(x => x.id === 'relay');
 if (!r || !/relay\.example\.com/.test(r.detail)) process.exit(1);
-console.log('ok 7/20: 中转模式感知');
+console.log('ok 7/21: 中转模式感知');
 "
 
 # 8) 登录态有效期：构造 exp 已过期的 id_token，doctor 应报 warn
@@ -80,7 +80,7 @@ const fs = require('fs');
 const d = JSON.parse(fs.readFileSync(process.env.FIX + '/doctor3.json', 'utf8'));
 const r = (d.results || []).find(x => x.id === 'auth-expiry');
 if (!r || r.status !== 'warn' || !/过期/.test(r.detail)) process.exit(1);
-console.log('ok 8/20: 登录态过期检测');
+console.log('ok 8/21: 登录态过期检测');
 "
 
 # 9) sessions：夹具会话（明文 JSONL）可被列出，且跳过环境包装找到真实提问
@@ -92,7 +92,7 @@ printf '%s\n' \
   > "$FIX/.codex/sessions/2026/09/05/rollout-test.jsonl"
 cli sessions -n 5 | grep -q "帮我写个 TODO 应用" || fail "sessions 未列出会话预览"
 cli sessions --dir projA -n 5 | grep -q "projA" || fail "sessions --dir 过滤失败"
-echo "ok 9/20: sessions 浏览"
+echo "ok 9/21: sessions 浏览"
 
 # 10) sessions --search：按关键词找到会话
 mkdir -p "$FIX/.codex/sessions/2026/09/04"
@@ -102,21 +102,21 @@ printf '%s\n' \
   '{"timestamp":"2026-09-04T09:00:05Z","type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"已定位并修复该回归问题。"}]}}' \
   > "$FIX/.codex/sessions/2026/09/04/rollout-search.jsonl"
 cli sessions --search codexsearchkeyword -n 5 | grep -q "回归问题" || fail "sessions --search 未命中"
-echo "ok 10/20: sessions 关键词搜索"
+echo "ok 10/21: sessions 关键词搜索"
 
 # 11) sessions --show：展示命中会话的完整对话（用户与 Codex 双方）
 SHOW_OUT=$(cli sessions --show --search codexsearchkeyword)
 echo "$SHOW_OUT" | grep -q "\[用户\]" || fail "show 未展示用户消息"
 echo "$SHOW_OUT" | grep -q "\[Codex\]" || fail "show 未展示 Codex 消息"
 echo "$SHOW_OUT" | grep -q "已定位并修复" || fail "show 未展示 Codex 回复内容"
-echo "ok 11/20: sessions --show 对话查看"
+echo "ok 11/21: sessions --show 对话查看"
 
 # 12) sessions --out：导出 Markdown 文件
 cli sessions --show --search codexsearchkeyword --out "$FIX/export.md" | grep -q "已导出" || fail "导出未确认"
 [ -f "$FIX/export.md" ] || fail "导出文件缺失"
 grep -q "## 用户" "$FIX/export.md" || fail "导出内容缺少用户消息"
 grep -q "已定位并修复" "$FIX/export.md" || fail "导出内容缺少 Codex 消息"
-echo "ok 12/20: sessions 导出 Markdown"
+echo "ok 12/21: sessions 导出 Markdown"
 
 # 13) config：只读摘要可解析 provider / MCP（含嵌套表）且不泄露敏感值
 printf '%s\n' \
@@ -125,7 +125,7 @@ CFG_OUT=$(cli config)
 echo "$CFG_OUT" | grep -q "中转 a: relay.example.com" || fail "config 未识别中转端点"
 echo "$CFG_OUT" | grep -q "（Key 在环境变量" || fail "config 未提示 env_key 位置"
 if echo "$CFG_OUT" | grep -q "sk-[A-Za-z0-9]"; then fail "config 泄露了 key"; fi
-echo "ok 13/20: config 只读摘要"
+echo "ok 13/21: config 只读摘要"
 
 # 14) doctor：MCP server 启动命令可达性（夹具用 npx，runner/本机均存在）
 FIX="$FIX" node -e "
@@ -133,13 +133,13 @@ const fs = require('fs');
 const d = JSON.parse(fs.readFileSync(process.env.FIX + '/doctor3.json', 'utf8'));
 const r = (d.results || []).find(x => x.id === 'mcp');
 if (!r || r.status !== 'ok') process.exit(1);
-console.log('ok 14/20: doctor MCP 命令可达性检查');
+console.log('ok 14/21: doctor MCP 命令可达性检查');
 "
 
 # 15) logs：列出日志文件（夹具 setup 已建 log/recent.log）
 LOG_OUT=$(cli logs -n 5)
 echo "$LOG_OUT" | grep -q "recent.log" || fail "logs 未列出日志文件"
-echo "ok 15/20: logs 列表"
+echo "ok 15/21: logs 列表"
 
 # 16) logs --tail：查看末尾 N 行（--file 按文件名关键字选择）
 printf '%s\n' \
@@ -152,7 +152,7 @@ printf '%s\n' \
 TAIL_OUT=$(cli logs --tail 2 --file tui)
 echo "$TAIL_OUT" | grep -q "line-e" || fail "logs --tail 未显示末尾行"
 echo "$TAIL_OUT" | grep -q "line-a" && fail "logs --tail 不应包含开头行"
-echo "ok 16/20: logs --tail"
+echo "ok 16/21: logs --tail"
 
 # 17) logs --search / --errors：默认只扫最新一个，--all 扫全部；--errors 只留报错级别行
 # tui.log 刚写入即最新；关键词只放在更早的 error.log 里
@@ -166,7 +166,7 @@ cli logs --search codexlogkeyword --all | grep -q "failed to start" || fail "log
 ERR_OUT=$(cli logs --errors --file tui)
 echo "$ERR_OUT" | grep -q "stream disconnected" || fail "logs --errors 未过滤出 ERROR 行"
 echo "$ERR_OUT" | grep -q "line-e" && fail "logs --errors 不应包含普通行"
-echo "ok 17/20: logs 搜索与报错过滤"
+echo "ok 17/21: logs 搜索与报错过滤"
 
 # 18) doctor：log 目录体积检查项存在（doctor3.json 生成时 log 目录已有 recent.log → ok）
 FIX="$FIX" node -e "
@@ -174,7 +174,7 @@ const fs = require('fs');
 const d = JSON.parse(fs.readFileSync(process.env.FIX + '/doctor3.json', 'utf8'));
 const r = (d.results || []).find(x => x.id === 'logs');
 if (!r || r.status !== 'ok') process.exit(1);
-console.log('ok 18/20: doctor 日志体积检查');
+console.log('ok 18/21: doctor 日志体积检查');
 "
 
 # 19) sessions --stats：取每个会话最后一条 token_count 的累计值并汇总（无 token_count 的会话跳过）
@@ -191,7 +191,7 @@ echo "$STATS_OUT" | grep -q "总计 2,200" || fail "sessions --stats 汇总不�
 echo "$STATS_OUT" | grep -q "无 token 统计" || fail "无统计会话应提示跳过数量"
 STATS_DIR=$(cli sessions --stats --days 30 --dir nomatch)
 echo "$STATS_DIR" | grep -q "没有带用量数据的会话" || fail "sessions --stats --dir 无命中提示缺失"
-echo "ok 19/20: sessions --stats 用量统计"
+echo "ok 19/21: sessions --stats 用量统计"
 
 # 20) CODEX_HOME 跟随：设置后所有命令检查重定位目录而非 ~/.codex
 mkdir -p "$FIX/custom-codex"
@@ -206,7 +206,22 @@ const dir = (d.results || []).find(x => x.id === 'codexdir');
 const home = (d.results || []).find(x => x.id === 'codex-home');
 if (!dir || dir.status !== 'ok' || !/custom-codex/.test(dir.detail)) process.exit(1);
 if (!home || !/custom-codex/.test(home.detail)) process.exit(1);
-console.log('ok 20/20: CODEX_HOME 跟随');
+console.log('ok 20/21: CODEX_HOME 跟随');
 "
+
+# 21) report：一键取证报告（分区完整 + 敏感模式自动脱敏）
+printf '%s\n' "2026-09-26T10:00:00Z ERROR request failed key=sk-test123456789012345 contact me@example.com" \
+  > "$FIX/.codex/log/codex-tui.log"
+cli report --out "$FIX/report.md" --no-network > /dev/null
+[ -f "$FIX/report.md" ] || fail "report 文件缺失"
+grep -q "## 环境自检" "$FIX/report.md" || fail "report 缺少 doctor 分区"
+grep -q "## 配置摘要" "$FIX/report.md" || fail "report 缺少配置分区"
+grep -q "relay.example.com" "$FIX/report.md" || fail "report 应包含配置摘要里的中转信息"
+grep -q "## 最近 7 天用量" "$FIX/report.md" || fail "report 缺少用量分区"
+if grep -q "sk-test123456789012345" "$FIX/report.md"; then fail "report 泄露了 sk key"; fi
+grep -q "sk-\*\*\*" "$FIX/report.md" || fail "report 未脱敏 sk key"
+if grep -q "me@example.com" "$FIX/report.md"; then fail "report 泄露了邮箱"; fi
+grep -q "内容不会出现在报告中" "$FIX/report.md" || fail "report 缺少脱敏提示"
+echo "ok 21/21: report 取证报告"
 
 echo "✅ 全部夹具测试通过"

@@ -75,4 +75,5 @@ codex login
 ## 排障日志
 
 - 日志在 `~/.codex/log/`，报错上下文（完整 URL、状态码、重试过程）通常比终端一行话详细得多，提 Issue / 求助时**先翻日志**（`codex-doctor logs --errors` 一键过滤报错级别行）；
+- 一键取证：`codex-doctor report` 生成已脱敏的 Markdown 报告（环境自检 + 配置摘要 + 报错日志 + 用量），直接附在 Issue 里（[13](13-codex-doctor.md)）；
 - 提交日志前脱敏：里面的 URL、账号信息可能含敏感内容。

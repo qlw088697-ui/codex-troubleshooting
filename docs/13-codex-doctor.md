@@ -43,6 +43,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `logs --search 关键词 [--all]` | 在日志里搜关键词（默认只搜最新一个，`--all` 扫全部日志） | 只读 |
 | `logs --errors [--all]` | 一键过滤 ERROR/WARN/PANIC/FATAL 级别行——提 Issue 前先跑它取证 | 只读 |
 | `update` | 查询 npm 上工具的最新版本与更新方式 | 只读 |
+| `report [--out FILE]` | 一键生成脱敏取证报告（Markdown）：环境自检 + 配置摘要 + 报错日志 + 7 天用量，Key/token/邮箱自动打码——提 Issue 前跑它 | 只读（写出一个报告文件） |
 
 ## 设计原则
 
@@ -73,6 +74,9 @@ codex-doctor logs --errors
 
 # 额度快花完时，看看最近 7 天用量都花在哪些会话
 codex-doctor sessions --stats --days 7
+
+# 提 Issue / 发 Discussions 前一键取证（自动脱敏，分享前快速过一遍即可）
+codex-doctor report
 ```
 
 ## 与 scripts/ 下自检脚本的关系

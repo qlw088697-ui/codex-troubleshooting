@@ -5,11 +5,12 @@ import { cleanTarget } from './clean.mjs';
 import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
 import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown, sessionStats } from './sessions.mjs';
 import { listLogs, resolveLogFile, tailLog, searchLogs, errorLines } from './logs.mjs';
+import { buildReport } from './report.mjs';
 import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.4.0';
+const VERSION = '1.5.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -39,6 +40,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
         --search 关键词 [--all]   在日志里搜关键词（默认最新一个，--all 扫全部日志）
         --errors [--all]          只看 ERROR/WARN/PANIC/FATAL 级别行（提 Issue 前取证）
   update                        查询 npm 最新版本与更新方式
+  report [--out FILE]           一键生成脱敏取证报告（Markdown）：doctor + config + 报错日志 + 用量
   help                          显示本帮助
 
 全局: --yes 跳过交互确认（非 TTY 环境必须显式提供）。设置了 CODEX_HOME 时，所有路径跟随它（默认 ~/.codex）。文档: docs/13-codex-doctor.md`;
@@ -310,6 +312,14 @@ async function main() {
     case 'update': {
       const r = await checkUpdate(VERSION);
       print(r.lines);
+      break;
+    }
+    case 'report': {
+      const r = await buildReport({ version: VERSION, network: flags.network !== false, outFile: flags.out });
+      console.log(`已生成取证报告: ${r.outFile}`);
+      console.log(`包含: 环境自检 ${r.checks} 项 / 配置摘要 / 报错日志 ${r.errLines} 行${r.hasUsage ? ' / 7 天用量' : ''}`);
+      console.log('敏感模式（API Key、token、邮箱）已自动脱敏；auth.json 内容不会包含。');
+      console.log('分享前请快速过一遍，确认没有遗漏的敏感信息。');
       break;
     }
     case 'help':

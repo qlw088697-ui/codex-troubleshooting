@@ -4,6 +4,13 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.22.0] - 2026-09-26
+
+### 新增
+
+- codex-doctor CLI **1.5.0**
+- `report` 命令：一键生成脱敏取证报告（Markdown，`--out` 指定路径）——环境自检 + 配置摘要 + 报错级别日志行 + 7 天用量；sk-* Key、Bearer token、邮箱、URL 凭证参数自动打码，`auth.json` 内容绝不入报告
+
 ## [1.21.0] - 2026-09-26
 
 ### 新增

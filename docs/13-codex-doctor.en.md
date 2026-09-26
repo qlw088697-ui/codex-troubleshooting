@@ -43,6 +43,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `logs --search keyword [--all]` | Search logs for a keyword (newest file only by default, `--all` scans everything) | read-only |
 | `logs --errors [--all]` | Show only ERROR/WARN/PANIC/FATAL lines — run this to grab evidence before filing an issue | read-only |
 | `update` | Check the latest npm version and how to update | read-only |
+| `report [--out FILE]` | One-shot redacted evidence report (Markdown): doctor checks + config summary + error log lines + 7-day usage; keys/tokens/emails auto-masked — run it before filing an issue | read-only (writes one report file) |
 
 ## Design principles
 
@@ -73,6 +74,9 @@ codex-doctor logs --errors
 
 # close to the limit? see which sessions consumed the last 7 days
 codex-doctor sessions --stats --days 7
+
+# one-shot evidence report before filing an issue / discussion (auto-redacted; skim before sharing)
+codex-doctor report
 ```
 
 ## Relation to scripts/

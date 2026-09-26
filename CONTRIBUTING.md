@@ -6,7 +6,7 @@
 
 **方式零：Discussions 提问** —— 只是提问、还没到「报障」程度的问题，优先去 [Discussions](https://github.com/qlw088697-ui/codex-troubleshooting/discussions)。
 
-**方式一：提 Issue** —— 不确定解法也可以提，写清楚「症状 + 环境」，大家一起排查。
+**方式一：提 Issue** —— 不确定解法也可以提，写清楚「症状 + 环境」，大家一起排查。取证报告可直接用 `npx -y @qqq123456789/codex-doctor report` 一键生成（已自动脱敏），贴进 Issue 即可。
 
 **方式二：直接 PR** —— 已验证的解法请直接改对应文档。每篇文档按主题分区，新问题加小节即可。
 

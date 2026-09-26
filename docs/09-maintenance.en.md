@@ -74,4 +74,5 @@ If the problem **disappears** afterwards, it was stale config/credentials; if it
 ## Logs
 
 - Logs live in `~/.codex/log/` — the error context (full URL, status code, retries) is far richer than the terminal's one-liner; **read the log before filing an issue or asking anywhere** (`codex-doctor logs --errors` filters error-level lines in one shot);
+- One-shot evidence: `codex-doctor report` generates a redacted Markdown report (doctor checks + config summary + error logs + usage) you can attach to an issue ([13](13-codex-doctor.en.md));
 - Redact before submitting: URLs and account info inside logs can be sensitive.
