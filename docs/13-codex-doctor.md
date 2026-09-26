@@ -18,6 +18,8 @@ git clone https://github.com/qlw088697-ui/codex-troubleshooting.git
 node codex-troubleshooting/tool/cli.mjs --help
 ```
 
+> 📌 工具全程跟随 `CODEX_HOME` 环境变量：设置了就检查该目录，未设置用 `~/.codex`（官方重定位机制）。自检脚本 `scripts/codex-doctor.sh` / `.ps1` 同样支持。
+
 ## 子命令一览
 
 | 命令 | 作用 | 危险性 |

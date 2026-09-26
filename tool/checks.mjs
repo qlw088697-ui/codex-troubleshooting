@@ -122,10 +122,17 @@ export async function collectChecks({ network = true } = {}) {
   }
 
   // 3. 配置目录与 config.toml
+  if (process.env.CODEX_HOME) {
+    add('codex-home', 'info', `CODEX_HOME 已设置：${CODEX_DIR}（以下检查全部跟随该目录）`, 'docs/14-codex-home-anatomy.md');
+  }
   if (exists(CODEX_DIR)) {
-    add('codexdir', 'ok', `~/.codex 存在: ${CODEX_DIR}`);
+    add('codexdir', 'ok', `Codex 主目录存在: ${CODEX_DIR}${process.env.CODEX_HOME ? '（来自 CODEX_HOME）' : ''}`);
   } else {
-    add('codexdir', 'warn', '~/.codex 不存在（从未运行过 codex，或已被完全重置）');
+    add(
+      'codexdir',
+      'warn',
+      `Codex 主目录不存在：${CODEX_DIR}${process.env.CODEX_HOME ? '（CODEX_HOME 指向的目录还没创建？）' : '（从未运行过 codex，或已被完全重置）'}`
+    );
   }
 
   let relayUrl = null;
@@ -338,7 +345,7 @@ export async function collectChecks({ network = true } = {}) {
   if (oneDrive && process.platform === 'win32') {
     const norm = (p) => path.resolve(String(p)).toLowerCase();
     if (norm(CODEX_DIR).startsWith(norm(oneDrive))) {
-      add('onedrive', 'fail', '~/.codex 在 OneDrive 同步范围内——凭据/配置被同步盘接管，务必移出', 'docs/09-maintenance.md');
+      add('onedrive', 'fail', `Codex 主目录（${CODEX_DIR}）在 OneDrive 同步范围内——凭据/配置被同步盘接管，务必移出`, 'docs/09-maintenance.md');
     } else if (norm(process.cwd()).startsWith(norm(oneDrive))) {
       add('onedrive', 'warn', '当前目录在 OneDrive 内——同步盘文件锁是 stream disconnected 的高发原因', 'docs/03-network-proxy.md');
     } else {
@@ -403,7 +410,7 @@ export function renderHuman(results, summary) {
   // 检查项所属分组（按 id），输出时分节展示
   const SECTION_OF = {
     codex: '基础环境', node: '基础环境', 'codex-newer': '基础环境',
-    codexdir: '配置与凭据', config: '配置与凭据', 'config-roots': '配置与凭据',
+    codexdir: '配置与凭据', 'codex-home': '配置与凭据', config: '配置与凭据', 'config-roots': '配置与凭据',
     providers: '配置与凭据', relay: '配置与凭据', auth: '配置与凭据', 'auth-expiry': '配置与凭据',
     'env-key': '环境变量', 'env-url': '环境变量', proxy: '环境变量', sysproxy: '环境变量',
     net: '网络',

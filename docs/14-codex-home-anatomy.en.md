@@ -25,6 +25,8 @@ English | [中文](14-codex-home-anatomy.md)
 | `requirements.toml` | Enterprise managed policy (pushed by admins) | — | Its presence means the device is managed (likely); deleting it gets it re-pushed |
 
 > Directory contents vary between versions: new files appear, old ones disappear. Research unfamiliar files before touching them; when unsure, **rename** instead of deleting — a rename is reversible.
+>
+> 📌 The whole directory can be relocated: set the `CODEX_HOME` environment variable and every path in this doc is relative to it (default `~/.codex`). The full `codex-doctor` toolchain and self-check scripts follow it.
 
 ## Common mistakes
 

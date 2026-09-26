@@ -40,8 +40,9 @@ if ($node) {
 }
 
 # ---------- 3. ~/.codex 与配置 ----------
-Section "配置目录 (~/.codex)"
-$codexDir = Join-Path $env:USERPROFILE ".codex"
+Section "配置目录 (~/.codex 或 `$CODEX_HOME)"
+$codexDir = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE ".codex" }
+if ($env:CODEX_HOME) { Write-Host ("  [--]  CODEX_HOME 已设置：{0}（以下检查全部跟随该目录）" -f $codexDir) }
 if (Test-Path $codexDir) {
     Ok "目录存在: $codexDir"
     $cfg = Join-Path $codexDir "config.toml"
@@ -69,7 +70,11 @@ if (Test-Path $codexDir) {
     if (Test-Path (Join-Path $codexDir "auth.json")) { Ok "auth.json 存在（内容不读取）" }
     else { Warn "auth.json 不存在 —— 尚未登录或凭据已清除，运行 codex login" }
 } else {
-    Warn "~/.codex 不存在 —— 从未运行过 codex，或已被完全重置"
+    if ($env:CODEX_HOME) {
+        Warn "Codex 主目录不存在：$codexDir（CODEX_HOME 指向的目录还没创建？）"
+    } else {
+        Warn "~/.codex 不存在 —— 从未运行过 codex，或已被完全重置"
+    }
 }
 
 # ---------- 4. 环境变量 ----------

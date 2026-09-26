@@ -31,8 +31,11 @@ else
 fi
 
 # ---------- 3. ~/.codex 与配置 ----------
-section "配置目录 (~/.codex)"
-CODEX_DIR="$HOME/.codex"
+section "配置目录 (~/.codex 或 \$CODEX_HOME)"
+CODEX_DIR="${CODEX_HOME:-$HOME/.codex}"
+if [ -n "$CODEX_HOME" ]; then
+  echo "  [--]   CODEX_HOME 已设置：$CODEX_DIR（以下检查全部跟随该目录）"
+fi
 if [ -d "$CODEX_DIR" ]; then
   ok "目录存在: $CODEX_DIR"
   CFG="$CODEX_DIR/config.toml"
@@ -56,7 +59,8 @@ if [ -d "$CODEX_DIR" ]; then
   if [ -f "$CODEX_DIR/auth.json" ]; then ok "auth.json 存在（内容不读取）"
   else warn "auth.json 不存在 —— 尚未登录或凭据已清除，运行 codex login"; fi
 else
-  warn "~/.codex 不存在 —— 从未运行过 codex，或已被完全重置"
+  warn "Codex 主目录不存在：$CODEX_DIR${CODEX_HOME:+（CODEX_HOME 指向的目录还没创建？）}"
+  [ -z "$CODEX_HOME" ] && warn "（从未运行过 codex，或已被完全重置）"
 fi
 
 # ---------- 4. 环境变量 ----------

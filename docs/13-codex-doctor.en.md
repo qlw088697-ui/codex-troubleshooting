@@ -18,6 +18,8 @@ git clone https://github.com/qlw088697-ui/codex-troubleshooting.git
 node codex-troubleshooting/tool/cli.mjs --help
 ```
 
+> 📌 The tool always follows the `CODEX_HOME` environment variable: when set, every check targets that directory; otherwise `~/.codex` (the official relocation mechanism). The standalone scripts `scripts/codex-doctor.sh` / `.ps1` honor it too.
+
 ## Subcommands
 
 | Command | Purpose | Risk |

@@ -4,6 +4,17 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.21.0] - 2026-09-26
+
+### 新增
+
+- codex-doctor CLI **1.4.0**
+- **`CODEX_HOME` 全程跟随**：设置该环境变量时，CLI 的所有命令与 doctor 检查自动指向重定位后的目录（此前硬编码 `~/.codex`，重定位用户全部检查落空）；doctor 新增 `codex-home` 提示项
+
+### 修复
+
+- 自检脚本 `codex-doctor.sh` / `.ps1` 同步支持 `CODEX_HOME`；目录相关提示措辞不再写死 `~/.codex`
+
 ## [1.20.0] - 2026-09-26
 
 ### 新增

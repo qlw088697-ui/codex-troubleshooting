@@ -9,7 +9,7 @@ import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.3.0';
+const VERSION = '1.4.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -41,7 +41,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   update                        查询 npm 最新版本与更新方式
   help                          显示本帮助
 
-全局: --yes 跳过交互确认（非 TTY 环境必须显式提供）。文档: docs/13-codex-doctor.md`;
+全局: --yes 跳过交互确认（非 TTY 环境必须显式提供）。设置了 CODEX_HOME 时，所有路径跟随它（默认 ~/.codex）。文档: docs/13-codex-doctor.md`;
 
 function parseFlags(args) {
   const flags = {};

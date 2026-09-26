@@ -4,7 +4,10 @@ import path from 'node:path';
 import os from 'node:os';
 
 export const HOME = os.homedir();
-export const CODEX_DIR = path.join(HOME, '.codex');
+// Codex 官方支持用 CODEX_HOME 重定位主目录（默认 ~/.codex）；工具全程跟随，避免检查错目录
+export const CODEX_DIR = process.env.CODEX_HOME
+  ? path.resolve(process.env.CODEX_HOME)
+  : path.join(HOME, '.codex');
 export const BACKUP_DIR = path.join(HOME, '.codex-backups');
 
 export function exists(p) {
