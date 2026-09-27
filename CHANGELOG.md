@@ -4,6 +4,13 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.25.0] - 2026-09-26
+
+### 新增
+
+- CI 双平台：新增 `windows-fixture` job（windows-latest + Git Bash），工具语法检查、冒烟与 23 项夹具测试在 ubuntu + windows 双平台验证——工具的主要用户在 Windows，此前仅在 ubuntu 跑测试
+- CONTRIBUTING 的 CI 说明同步
+
 ## [1.24.0] - 2026-09-26
 
 ### 新增

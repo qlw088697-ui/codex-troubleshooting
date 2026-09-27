@@ -22,7 +22,7 @@
 
 ## 工程化
 
-- [ ] CI 增加 Windows runner 跑夹具测试（当前仅 ubuntu；`.sh` 测试在 Windows 下路径行为值得验证）
+- [x] CI 增加 Windows runner 跑夹具测试——v1.25.0 完成（`windows-fixture` job：Git Bash + Node 语法/冒烟/夹具双平台验证）
 - [ ] 发版自动化：CHANGELOG 最新小节 → GitHub Release body 的生成脚本（省去手动复制）
 - [ ] npm 包体积审计：`npm pack` 预览 + files 字段核对
 - [ ] `docs/releases.md` 生成器支持预发布版过滤开关

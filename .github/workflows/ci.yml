@@ -52,3 +52,24 @@ jobs:
 
       - name: codex-doctor CLI 夹具测试
         run: bash scripts/test-codex-doctor.sh
+
+  # 双平台验证：工具的主要用户在 Windows 上，夹具测试不能只跑 ubuntu
+  windows-fixture:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash # runner 自带的 Git Bash，与本地开发环境一致
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Node 脚本语法检查
+        run: |
+          for f in tool/*.mjs; do node --check "$f"; done
+
+      - name: codex-doctor CLI 冒烟测试
+        run: |
+          node tool/cli.mjs doctor --no-network --json > doctor-smoke.json || true
+          node -e "const d=require('./doctor-smoke.json'); const c=(d.results||[]).find(r=>r.id==='codex'); if(!d.summary || !Array.isArray(d.results) || !c) process.exit(1); console.log('doctor smoke OK: codex check ->', c.status)"
+
+      - name: codex-doctor CLI 夹具测试
+        run: bash scripts/test-codex-doctor.sh
