@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { execFile } from 'node:child_process';
 import { collectChecks } from './checks.mjs';
 import { configSummary } from './config.mjs';
 import { errorLines } from './logs.mjs';
@@ -23,11 +24,23 @@ function fmtInt(n) {
   return n.toLocaleString('en-US');
 }
 
-export async function buildReport({ version, network = true, outFile = null } = {}) {
+// 用系统默认程序打开文件（win/mac/linux 各自的原生命令，失败静默——CI 无桌面属正常）
+export function openInDefaultApp(file) {
+  const cmd = process.platform === 'win32' ? 'explorer.exe' : process.platform === 'darwin' ? 'open' : 'xdg-open';
+  try {
+    execFile(cmd, [file], { detached: true, stdio: 'ignore' }, () => {}).unref();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function buildReport({ version, network = true, outFile = null, days = 7 } = {}) {
+  const usageDays = Number.isFinite(days) && days > 0 ? days : 7;
   const results = await collectChecks({ network });
   const cfgLines = configSummary().map(redact);
   const errs = errorLines({ all: true, limit: 30 });
-  const stats = sessionStats({ days: 7 });
+  const stats = sessionStats({ days: usageDays });
 
   const lines = ['# codex-doctor 取证报告', ''];
   lines.push('- 生成时间：' + new Date().toLocaleString());
@@ -64,13 +77,13 @@ export async function buildReport({ version, network = true, outFile = null } = 
   }
   lines.push('');
 
-  lines.push('## 最近 7 天用量', '');
+  lines.push(`## 最近 ${usageDays} 天用量`, '');
   if (stats.totals) {
     lines.push(
       `- ${stats.items.length} 个会话：输入 ${fmtInt(stats.totals.input)} / 输出 ${fmtInt(stats.totals.output)} / 总计 ${fmtInt(stats.totals.total)} tokens（缓存读取 ${fmtInt(stats.totals.cached)}）`
     );
   } else {
-    lines.push('（最近 7 天没有带用量数据的会话）');
+    lines.push(`（最近 ${usageDays} 天没有带用量数据的会话）`);
   }
   lines.push('');
   lines.push('> 分享前请快速过一遍本文件，确认没有遗漏的敏感信息。`auth.json` 内容不会出现在报告中。');
@@ -78,5 +91,5 @@ export async function buildReport({ version, network = true, outFile = null } = 
 
   const dest = path.resolve(outFile || `codex-report-${timestamp()}.md`);
   fs.writeFileSync(dest, lines.join('\n'), 'utf8');
-  return { outFile: dest, checks: results.length, errLines: errs.length, hasUsage: Boolean(stats.totals) };
+  return { outFile: dest, checks: results.length, errLines: errs.length, hasUsage: Boolean(stats.totals), days: usageDays };
 }

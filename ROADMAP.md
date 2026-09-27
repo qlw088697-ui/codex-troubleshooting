@@ -7,8 +7,8 @@
 
 - [x] `history` 命令：浏览 `~/.codex/history.jsonl` 输入历史（找回"刚才想用的那条命令"）——v1.24.0 完成
 - [ ] doctor：MCP server 启动冒烟检查（spawn 一次看是否秒退）——注意耗时与误报控制
-- [ ] `report --days N`：控制日志与用量取证窗口；`--open` 生成后直接用系统默认程序打开
-- [ ] `sessions --stats --top N`：按总消耗排序，快速定位"最烧钱的会话"
+- [x] `report --days N`：控制用量取证窗口；`--open` 生成后直接用系统默认程序打开——v1.26.0 完成
+- [x] `sessions --stats --top N`：按总消耗排序，快速定位"最烧钱的会话"——v1.26.0 完成
 - [ ] `clean` 支持 `archived_sessions/`（老版本 Codex 的归档目录，存在才处理）
 - [ ] `versions --notes <tag>`：拉取指定版本 release notes 摘要，辅助评估是否值得升级
 - [ ] doctor：npm 全局包健康（`npm ls -g @openai/codex` 权限/损坏检出）

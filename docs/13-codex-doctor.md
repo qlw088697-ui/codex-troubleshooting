@@ -37,14 +37,14 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `sessions [-n 10] [--dir 关键字]` | 浏览历史会话：时间、工作目录、来源、首条提问预览；`--dir` 按目录过滤，找回「上次那个对话」 | 只读 |
 | `sessions --search 关键词 [--deep]` | 按关键词搜索会话（默认搜每个文件开头 256KB，`--deep` 全文扫描） | 只读 |
 | `sessions --show [--search 关键词] [--pick N] [--full]` | 查看会话完整对话（默认最近一次；默认单条截断 400 字） | 只读 |
-| `sessions --stats [--days 7] [--dir 关键字]` | 会话用量统计：每个会话的输入/输出/合计 tokens 与窗口内总计——429 自查、看额度花在哪 | 只读 |
+| `sessions --stats [--days 7] [--dir 关键字] [--top N]` | 会话用量统计：每个会话的输入/输出/合计 tokens 与窗口内总计——429 自查、看额度花在哪；`--top N` 按总消耗降序定位「最烧钱的会话」 | 只读 |
 | `logs [-n 10]` | 列出 `~/.codex/log/` 下的日志文件（时间、大小） | 只读 |
 | `logs --tail 50 [--file 关键字]` | 查看日志末尾 N 行（默认最新一个文件，`--file` 按文件名关键字选择） | 只读 |
 | `logs --search 关键词 [--all]` | 在日志里搜关键词（默认只搜最新一个，`--all` 扫全部日志） | 只读 |
 | `logs --errors [--all]` | 一键过滤 ERROR/WARN/PANIC/FATAL 级别行——提 Issue 前先跑它取证 | 只读 |
 | `history [-n 20] [--search 关键词]` | 浏览 `~/.codex/history.jsonl` 输入历史，找回「刚才想用的那条命令」（坏行自动跳过） | 只读 |
 | `update` | 查询 npm 上工具的最新版本与更新方式 | 只读 |
-| `report [--out FILE]` | 一键生成脱敏取证报告（Markdown）：环境自检 + 配置摘要 + 报错日志 + 7 天用量，Key/token/邮箱自动打码——提 Issue 前跑它 | 只读（写出一个报告文件） |
+| `report [--out FILE]` | 一键生成脱敏取证报告（Markdown）：环境自检 + 配置摘要 + 报错日志 + 用量，Key/token/邮箱自动打码——提 Issue 前跑它；`--days N` 调整用量窗口（默认 7 天），`--open` 生成后直接打开 | 只读（写出一个报告文件） |
 
 ## 设计原则
 
@@ -75,6 +75,9 @@ codex-doctor logs --errors
 
 # 额度快花完时，看看最近 7 天用量都花在哪些会话
 codex-doctor sessions --stats --days 7
+
+# 定位「最烧钱的会话」（按总消耗降序前 5）
+codex-doctor sessions --stats --days 30 --top 5
 
 # 提 Issue / 发 Discussions 前一键取证（自动脱敏，分享前快速过一遍即可）
 codex-doctor report

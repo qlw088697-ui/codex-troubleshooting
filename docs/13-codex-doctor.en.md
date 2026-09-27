@@ -37,14 +37,14 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `sessions [-n 10] [--dir keyword]` | Browse past sessions: time, workdir, source, first-prompt preview; `--dir` filters by directory — find "that conversation" | read-only |
 | `sessions --search keyword [--deep]` | Search sessions by keyword (first 256KB of each file by default, `--deep` scans fully) | read-only |
 | `sessions --show [--search keyword] [--pick N] [--full]` | Print a session's full transcript (latest by default; messages truncated to 400 chars unless `--full`) | read-only |
-| `sessions --stats [--days 7] [--dir keyword]` | Session usage stats: input/output/total tokens per session plus window totals — self-check for 429s and where the quota went | read-only |
+| `sessions --stats [--days 7] [--dir keyword] [--top N]` | Session usage stats: input/output/total tokens per session plus window totals — self-check for 429s and where the quota went; `--top N` ranks by total consumption to find the costliest sessions | read-only |
 | `logs [-n 10]` | List log files under `~/.codex/log/` (time, size) | read-only |
 | `logs --tail 50 [--file keyword]` | Print the last N lines of a log (newest by default, `--file` picks by name substring) | read-only |
 | `logs --search keyword [--all]` | Search logs for a keyword (newest file only by default, `--all` scans everything) | read-only |
 | `logs --errors [--all]` | Show only ERROR/WARN/PANIC/FATAL lines — run this to grab evidence before filing an issue | read-only |
 | `history [-n 20] [--search keyword]` | Browse the `~/.codex/history.jsonl` prompt history — find "that command you typed earlier" (corrupt lines skipped) | read-only |
 | `update` | Check the latest npm version and how to update | read-only |
-| `report [--out FILE]` | One-shot redacted evidence report (Markdown): doctor checks + config summary + error log lines + 7-day usage; keys/tokens/emails auto-masked — run it before filing an issue | read-only (writes one report file) |
+| `report [--out FILE]` | One-shot redacted evidence report (Markdown): doctor checks + config summary + error log lines + usage; keys/tokens/emails auto-masked — run it before filing an issue; `--days N` sets the usage window (default 7 days), `--open` opens it after generation | read-only (writes one report file) |
 
 ## Design principles
 
@@ -75,6 +75,9 @@ codex-doctor logs --errors
 
 # close to the limit? see which sessions consumed the last 7 days
 codex-doctor sessions --stats --days 7
+
+# find the costliest sessions (top 5 by total consumption)
+codex-doctor sessions --stats --days 30 --top 5
 
 # one-shot evidence report before filing an issue / discussion (auto-redacted; skim before sharing)
 codex-doctor report
