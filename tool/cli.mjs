@@ -11,7 +11,7 @@ import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.8.0';
+const VERSION = '1.9.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -22,6 +22,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
                                   --no-network   跳过网络探测
                                   --json         输出 JSON（供脚本消费）
                                   --strict       有 WARN 也返回非零退出码
+                                  --mcp-smoke    真实拉起 MCP server 做 initialize 握手（默认关）
   clean <sessions|logs>         归档超过 N 天的会话/日志（默认预演，--yes 才执行）
                                   --days N       阈值天数（sessions 默认 30，logs 默认 14）
                                   --yes          真正执行（否则仅预演）
@@ -58,6 +59,7 @@ function parseFlags(args) {
     else if (a === '--json') flags.json = true;
     else if (a === '--no-network') flags.network = false;
     else if (a === '--strict') flags.strict = true;
+    else if (a === '--mcp-smoke') flags.mcpSmoke = true;
     else if (a === '--days') flags.days = Number(args[++i]);
     else if (a === '-n' || a === '--limit') flags.limit = Number(args[++i]);
     else if (a === '--dir') flags.dir = args[++i];
@@ -380,7 +382,7 @@ async function main() {
 }
 
 async function collectAndRun(flags) {
-  const results = await collectChecks({ network: flags.network !== false });
+  const results = await collectChecks({ network: flags.network !== false, mcpSmoke: flags.mcpSmoke === true });
   const summary = summarize(results);
   if (flags.json) {
     console.log(JSON.stringify({ results, summary }, null, 2));

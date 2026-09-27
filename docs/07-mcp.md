@@ -44,7 +44,8 @@ args = ["/c", "npx", "-y", "@upstash/context7-mcp"]
 3. **Windows** → 检查是否需要 `cmd /c` 包装（见上）；
 4. **确认配置段落名**是 `[mcp_servers.<name>]`，不是 `[mcp.<name>]` 之类的变体；
 5. 换个名字试试——server 名重复或含特殊字符可能导致加载失败；
-6. 仍不行，看 `~/.codex/log/` 日志里 MCP 相关报错。
+6. **自动深检**：`codex-doctor doctor --mcp-smoke` 会真实拉起每个 server 发送 MCP initialize 握手（约 8s/个），直接告诉你哪个 server「命令在但起不来」以及原因（包缺失秒退、握手超时等）。注意它会短暂启动进程，所以默认关闭；个别由 App 宿主托管的 server 无法被独立拉起，报「未完成握手」不代表 Codex 里不可用，以实际使用为准；
+7. 仍不行，看 `~/.codex/log/` 日志里 MCP 相关报错（`codex-doctor logs --errors`）。
 
 ## 调用报错 / 超时
 

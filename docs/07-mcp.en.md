@@ -42,7 +42,8 @@ Check this first whenever tools don't show up on Windows — it resolves most "c
 3. **Windows** → check whether the `cmd /c` wrapper is needed (see above);
 4. **Confirm the section name** is `[mcp_servers.<name>]`, not some variant like `[mcp.<name>]`;
 5. Try renaming the server — duplicate names or special characters can break loading;
-6. Still failing: search `~/.codex/log/` for MCP-related errors.
+6. **Automated deep check**: `codex-doctor doctor --mcp-smoke` actually launches each server and performs the MCP initialize handshake (~8s each), telling you exactly which server "exists but won't start" and why (missing package crashing instantly, handshake timeout, etc.). It briefly starts processes, so it's opt-in by default; a few app-hosted servers can't be launched standalone — "handshake not completed" there does not mean unusable inside Codex, trust actual usage;
+7. Still failing: search `~/.codex/log/` for MCP-related errors (`codex-doctor logs --errors`).
 
 ## Call errors / timeouts
 

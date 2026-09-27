@@ -6,7 +6,7 @@
 ## 工具 codex-doctor
 
 - [x] `history` 命令：浏览 `~/.codex/history.jsonl` 输入历史（找回"刚才想用的那条命令"）——v1.24.0 完成
-- [ ] doctor：MCP server 启动冒烟检查（spawn 一次看是否秒退）——注意耗时与误报控制
+- [x] doctor：MCP server 启动冒烟检查——v1.27.0 完成（`--mcp-smoke`：真实拉起 + initialize 握手，opt-in，含 args/env 解析与 Windows 空格路径修复）
 - [x] `report --days N`：控制用量取证窗口；`--open` 生成后直接用系统默认程序打开——v1.26.0 完成
 - [x] `sessions --stats --top N`：按总消耗排序，快速定位"最烧钱的会话"——v1.26.0 完成
 - [ ] `clean` 支持 `archived_sessions/`（老版本 Codex 的归档目录，存在才处理）

@@ -1,5 +1,5 @@
 // doctor 自检：与 scripts/codex-doctor.ps1/.sh 检查项一致，跨平台单一实现
-import { execFileSync, execSync } from 'node:child_process';
+import { execFileSync, execSync, spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { HOME, CODEX_DIR, exists, dirBytes } from './util.mjs';
@@ -99,7 +99,143 @@ async function fetchLatestCodexVersion() {
   }
 }
 
-export async function collectChecks({ network = true } = {}) {
+// 解析单行 TOML 字符串数组（["a", 'b']）——不追求完整 TOML，够用即可
+function parseTomlStringArray(raw) {
+  const out = [];
+  const re = /"((?:[^"\\]|\\.)*)"|'([^']*)'/g;
+  let m;
+  while ((m = re.exec(raw)) !== null) out.push(m[1] !== undefined ? m[1].replace(/\\"/g, '"') : m[2]);
+  return out;
+}
+
+// 解析单行内联表（{ KEY = "val", K2 = "v2" }）——值只用于 spawn，绝不输出
+function parseTomlInlineEnv(raw) {
+  const env = {};
+  const re = /([A-Za-z0-9_-]+)\s*=\s*"((?:[^"\\]|\\.)*)"|([A-Za-z0-9_-]+)\s*=\s*'([^']*)'/g;
+  let m;
+  while ((m = re.exec(raw)) !== null) {
+    const key = m[1] || m[3];
+    const val = m[2] !== undefined ? m[2] : m[4];
+    if (key) env[key] = val ?? '';
+  }
+  return env;
+}
+
+// Windows 经 shell 启动时手动拼接命令串（spawn 不接受 args 数组 + shell:true 的组合，Node 24 起弃用）
+function shellJoin(cmd, args) {
+  const q = (s) => (/\s/.test(s) && !/^".*"$/.test(s) ? `"${s}"` : s);
+  return [cmd, ...args].map(q).join(' ');
+}
+
+// MCP 启动握手冒烟：真实拉起 server，发送 initialize，看是否按 JSON-RPC 应答。
+// 只做 liveness + 握手，不做完整会话；无论结果如何都杀掉进程。env 值不进任何输出。
+function smokeMcpServer(name, cmd, args, env = {}, timeoutMs = 8000) {
+  return new Promise((resolve) => {
+    let child;
+    try {
+      if (process.platform === 'win32') {
+        // 带空格的命令路径必须自带引号，否则 cmd 找不到文件
+        const needsQuote = /\s/.test(cmd.trim()) && !/^".*"$/.test(cmd.trim());
+        const spawnCmd = needsQuote ? `"${cmd.trim()}"` : cmd;
+        child = spawn(shellJoin(spawnCmd, args), {
+          env: { ...process.env, ...env },
+          shell: true, // Windows 上 npm 全局命令是 .cmd，必须经 shell
+          stdio: ['pipe', 'pipe', 'pipe'],
+          windowsHide: true,
+        });
+      } else {
+        child = spawn(cmd, args, {
+          env: { ...process.env, ...env },
+          stdio: ['pipe', 'pipe', 'pipe'],
+          windowsHide: true,
+        });
+      }
+    } catch (e) {
+      resolve({ name, ok: false, reason: `无法启动（${e.code || e.message}）` });
+      return;
+    }
+    let done = false;
+    let stderrTail = '';
+    const finish = (r) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      try {
+        child.kill();
+      } catch {
+        /* 进程已退出 */
+      }
+      // 主动销毁管道：server 的子进程若存活并继承句柄，不销毁会吊住本进程的事件循环
+      try {
+        child.stdin.destroy();
+        child.stdout.destroy();
+        child.stderr.destroy();
+      } catch {
+        /* 流已关闭 */
+      }
+      resolve(r);
+    };
+    const timer = setTimeout(
+      () => finish({ name, ok: false, reason: `${timeoutMs / 1000}s 内无 initialize 应答（首次运行的 npx 下载可能超时，可重跑确认）` }),
+      timeoutMs
+    );
+    let buf = '';
+    child.stdout.on('data', (d) => {
+      buf += d.toString();
+      for (const line of buf.split('\n')) {
+        const t = line.trim();
+        if (!t) continue;
+        let j;
+        try {
+          j = JSON.parse(t);
+        } catch {
+          continue;
+        }
+        if (j.id === 1 && j.result) {
+          finish({ name, ok: true, server: j.result?.serverInfo?.name || 'ok' });
+          return;
+        }
+        if (j.id === 1 && j.error) {
+          finish({ name, ok: false, reason: `initialize 返回错误：${String(j.error.message || '?').slice(0, 80)}` });
+          return;
+        }
+      }
+    });
+    child.stderr.on('data', (d) => {
+      if (stderrTail.length < 200) stderrTail += d.toString();
+    });
+    child.on('exit', (code) => {
+      if (done) return;
+      if (code === 0) {
+        finish({
+          name,
+          ok: false,
+          reason: buf.length > 0 ? '进程退出且未完成 initialize 握手——非标准 MCP server 或仅由 IDE 内部拉起？' : '进程立即退出（exit 0）——不是 MCP server？',
+        });
+      } else {
+        finish({
+          name,
+          ok: false,
+          reason: `进程秒退（exit ${code}）${stderrTail ? `——${stderrTail.trim().split('\n').pop().slice(0, 80)}` : '——包未安装或参数错误'}`,
+        });
+      }
+    });
+    child.on('error', (e) => finish({ name, ok: false, reason: `无法启动（${e.code || e.message}）` }));
+    const init = JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'initialize',
+      params: { protocolVersion: '2024-11-05', capabilities: {}, clientInfo: { name: 'codex-doctor', version: '1.0.0' } },
+    });
+    try {
+      child.stdin.write(init + '\n');
+    } catch {
+      /* stdin 关闭则交给 exit/timeout 路径 */
+    }
+  });
+}
+
+export async function collectChecks({ network = true, mcpSmoke = false } = {}) {
   const results = [];
   const add = (id, status, detail, doc) => results.push({ id, status, detail, doc });
 
@@ -164,30 +300,73 @@ export async function collectChecks({ network = true } = {}) {
     // MCP server 命令可达性（「工具不出现」的头号原因就是命令起不来）
     const mcpCmds = [];
     let inMcp = false;
-    let mcpName = null;
+    let mcpEntry = null;
+    let inMcpEnvTable = false;
     for (const raw of content.split(/\r?\n/)) {
       const l = raw.trim();
       const tm = l.match(/^\[([^\]]+)\]$/);
       if (tm) {
         const n = tm[1].trim();
+        // [mcp_servers.X.env] 多行环境变量表：值只用于 spawn，绝不输出
+        const em2 = n.match(/^mcp_servers\.([^.]+)\.env$/);
+        if (em2) {
+          inMcp = false;
+          inMcpEnvTable = true;
+          mcpEntry = mcpCmds.find((x) => x.name === em2[1]) || null;
+          continue;
+        }
+        inMcpEnvTable = false;
         inMcp = n.startsWith('mcp_servers.') && n.split('.').length === 2;
-        mcpName = inMcp ? n.replace('mcp_servers.', '') : null;
+        if (inMcp) {
+          if (mcpCmds.length < 5) {
+            mcpEntry = { name: n.replace('mcp_servers.', ''), cmd: null, args: [], env: {} };
+            mcpCmds.push(mcpEntry);
+          } else mcpEntry = null;
+        } else mcpEntry = null;
         continue;
       }
-      if (!inMcp || !l || l.startsWith('#')) continue;
+      if (inMcpEnvTable && mcpEntry) {
+        if (!l || l.startsWith('#')) continue;
+        const kv = l.match(/^([A-Za-z0-9_-]+)\s*=\s*"((?:[^"\\]|\\.)*)"|^([A-Za-z0-9_-]+)\s*=\s*'([^']*)'/);
+        if (kv) mcpEntry.env[kv[1] || kv[3]] = kv[2] !== undefined ? kv[2] : (kv[4] ?? '');
+        continue;
+      }
+      if (!inMcp || !l || l.startsWith('#') || !mcpEntry) continue;
       const cm = l.match(/^command\s*=\s*["']([^"']+)["']/);
-      if (cm && mcpName && mcpCmds.length < 5) mcpCmds.push({ name: mcpName, cmd: cm[1] });
+      if (cm) mcpEntry.cmd = cm[1];
+      const am = l.match(/^args\s*=\s*\[(.*)\]$/);
+      if (am) mcpEntry.args = parseTomlStringArray(am[1]);
+      const em = l.match(/^env\s*=\s*\{(.*)\}$/);
+      if (em) mcpEntry.env = parseTomlInlineEnv(em[1]);
     }
-    if (mcpCmds.length > 0) {
-      const missing = mcpCmds.filter((x) => !commandExists(x.cmd));
+    const mcpValid = mcpCmds.filter((x) => x.cmd);
+    if (mcpValid.length > 0) {
+      const missing = mcpValid.filter((x) => !commandExists(x.cmd));
       add(
         'mcp',
         missing.length === 0 ? 'ok' : 'fail',
         missing.length === 0
-          ? `${mcpCmds.length} 个 MCP server 的启动命令均可解析`
+          ? `${mcpValid.length} 个 MCP server 的启动命令均可解析`
           : `MCP 启动命令不可解析: ${missing.map((x) => `${x.name}(${x.cmd})`).join(', ')}`,
         'docs/07-mcp.md'
       );
+      if (mcpSmoke) {
+        // 深检（opt-in，--mcp-smoke）：真实拉起每个 server 做 initialize 握手，区分「命令在但起不来」
+        const smokeResults = [];
+        for (const x of mcpValid) {
+          smokeResults.push(await smokeMcpServer(x.name, x.cmd, x.args, x.env));
+        }
+        const passed = smokeResults.filter((r) => r.ok);
+        const failed = smokeResults.filter((r) => !r.ok);
+        add(
+          'mcp-smoke',
+          failed.length === 0 ? 'ok' : 'fail',
+          failed.length === 0
+            ? `MCP 启动握手 ${passed.length}/${smokeResults.length} 通过（${passed.map((r) => r.name).join(', ')}）`
+            : `MCP 启动握手 ${passed.length}/${smokeResults.length} 通过（${passed.map((r) => r.name).join(', ') || '无'}）——失败: ${failed.map((r) => `${r.name}(${r.reason})`).join('；')}`,
+          'docs/07-mcp.md'
+        );
+      }
     }
 
     if (/^\[model_providers\./m.test(content)) {
@@ -431,7 +610,7 @@ export function renderHuman(results, summary) {
     providers: '配置与凭据', relay: '配置与凭据', auth: '配置与凭据', 'auth-structure': '配置与凭据', 'auth-expiry': '配置与凭据',
     'env-key': '环境变量', 'env-url': '环境变量', proxy: '环境变量', sysproxy: '环境变量',
     net: '网络',
-    disk: '系统', onedrive: '系统坑位', 'wsl-state': '系统坑位', 'ps-policy': '系统坑位', sessions: '维护', logs: '维护',
+    disk: '系统', onedrive: '系统坑位', 'wsl-state': '系统坑位', 'ps-policy': '系统坑位', sessions: '维护', logs: '维护', 'mcp-smoke': '网络',
   };
   const ORDER = ['基础环境', '配置与凭据', '环境变量', '网络', '系统', '系统坑位', '维护', '其他'];
   const groups = new Map();

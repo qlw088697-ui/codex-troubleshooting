@@ -4,6 +4,18 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.27.0] - 2026-09-26
+
+### 新增
+
+- codex-doctor CLI **1.9.0**
+- doctor `--mcp-smoke`（opt-in 深检）：真实拉起每个 MCP server 发送 initialize 握手，区分「命令可解析」与「真的起得来」——秒退（包缺失/参数错误）、握手超时、非标准 server 一目了然；解析 config 的 `args` 数组与行内/多行 `env` 表（值不进输出）
+- docs/07 排障步骤更新：手动验证之后可先跑 `--mcp-smoke` 再翻日志
+
+### 修复
+
+- Windows 带空格的 MCP 命令路径未加引号导致误报「找不到文件」
+
 ## [1.26.0] - 2026-09-26
 
 ### 新增
