@@ -4,6 +4,14 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.29.0] - 2026-09-28
+
+### 新增
+
+- 新文档 **[15 · 性能与体验](docs/15-codex-performance.md)**：把「越用越慢」按四种慢分诊——推理档与 Fast mode（`/model`、`/fast`）、上下文膨胀（`/compact` 与自动压缩 `model_auto_compact_token_limit`、`tool_output_token_limit`、AGENTS.md 体积、会话拆分）、MCP 启动开销（`startup_timeout_sec`/`enabled`）、终端渲染；附「提速最小配置」与自查清单。全部配置键经官方 Configuration Reference / Speed / 斜杠命令文档核实（2026-09），压缩机制另有本机会话 `compacted` 事件佐证。中英双语
+- docs/07 超时小节补上官方核实到的键：`tool_timeout_sec`（默认 60s）、`startup_timeout_sec`（默认 10s）、`enabled` 开关
+- docs/08 速查表增补「越用越慢」「启动慢」两行；README 中英症状导航、目录树同步（主题文档增至 15 篇）
+
 ## [1.28.0] - 2026-09-26
 
 ### 新增

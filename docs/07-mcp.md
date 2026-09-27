@@ -49,9 +49,9 @@ args = ["/c", "npx", "-y", "@upstash/context7-mcp"]
 
 ## 调用报错 / 超时
 
-- **超时**：server 本身响应慢（比如联网拉数据的），换更快的源或加大超时（如版本支持相应配置项）；
+- **超时**：server 本身响应慢（比如联网拉数据的），换更快的源，或调大 `mcp_servers.<id>.tool_timeout_sec`（官方默认 60 秒）；启动阶段被掐断调 `startup_timeout_sec`（官方默认 10 秒）；
 - **认证失败**：HTTP 型 MCP 需要的 header/token 配进 `env` 或按 server 文档配置；
-- **一个 server 崩了拖慢启动**：把不常用的 server 注释掉，二分定位是哪一个的问题。
+- **一个 server 崩了拖慢启动**：不用的 server 用 `mcp_servers.<id>.enabled = false` 直接关掉（不用删配置）；二分定位时逐个开关最方便。
 
 ## 环境变量注意
 

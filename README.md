@@ -76,6 +76,7 @@ npx -y @qqq123456789/codex-doctor --help      # 查看全部命令
 | 想看完整实战：从零用 Codex 做一个项目 | [12 实战演练](docs/12-walkthrough.md) |
 | 想要一条命令完成自检/清理/备份 | [13 codex-doctor CLI](docs/13-codex-doctor.md) |
 | 想知道 ~/.codex 里各文件是什么、哪些能删 | [14 目录解剖](docs/14-codex-home-anatomy.md) |
+| Codex 越用越慢 / 回复迟钝 / 想提速省 token | [15 性能与体验](docs/15-codex-performance.md) |
 | 想清理 / 备份 / 迁移机器 / 完全重置 | [09 日常维护](docs/09-maintenance.md) |
 | 想看 Codex 出了哪些新版本 | [版本追踪](docs/releases.md)（CI 每周自动更新） |
 
@@ -97,9 +98,10 @@ docs/
 ├── 12-walkthrough.md       实战演练：从零用 Codex 搭一个项目
 ├── 13-codex-doctor.md      codex-doctor CLI 使用手册
 ├── 14-codex-home-anatomy.md ~/.codex 目录解剖：什么能删、什么不能动
+├── 15-codex-performance.md  性能与体验：越用越慢的分诊与提速（压缩 / 推理档 / MCP）
 └── releases.md             Codex 版本追踪（CI 每天自动生成）
 
-> 🌍 所有主题文档均有英文版（`docs/*.en.md`，共 14 篇），目录树不一一列出；中英版本在文首互链。
+> 🌍 所有主题文档均有英文版（`docs/*.en.md`，共 15 篇），目录树不一一列出；中英版本在文首互链。
 scripts/
 ├── codex-doctor.ps1        Windows 环境自检脚本
 ├── codex-doctor.sh         macOS / Linux / WSL 环境自检脚本

@@ -41,6 +41,8 @@
 | `stream disconnected before completion` | Network / OneDrive folder / very long session | [03 deep dive](03-network-proxy.md) |
 | "Trust this folder" prompt on every launch | Directory not trusted / version behavior | [06](06-sandbox-windows.md) |
 | Weekly limit reset date keeps moving | Rolling 7-day window, by design | [05](05-models-limits.md) |
+| Getting slower as the chat grows | Context bloat — `/compact` or split sessions | [15 Performance](15-codex-performance.md) |
+| Slow startup / stuck before first action | MCP server startup timeout (10s default) | [15](15-codex-performance.md) · [07](07-mcp.md) |
 
 ## The five-step triage (cheat sheet)
 

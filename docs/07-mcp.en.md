@@ -47,9 +47,9 @@ Check this first whenever tools don't show up on Windows — it resolves most "c
 
 ## Call errors / timeouts
 
-- **Timeouts**: the server itself is slow (e.g. fetches remote data) — use a faster source or increase timeouts if your version supports it;
+- **Timeouts**: the server itself is slow (e.g. fetches remote data) — use a faster source, or raise `mcp_servers.<id>.tool_timeout_sec` (official default: 60s); for startup-phase timeouts it's `startup_timeout_sec` (default: 10s);
 - **Auth failures**: for HTTP-based servers, put required headers/tokens into `env` or per the server's docs;
-- **One broken server slows startup**: comment out the servers you don't use and bisect to find the culprit.
+- **One broken server slows startup**: disable servers you don't use with `mcp_servers.<id>.enabled = false` (no need to delete config); toggling them one by one is the easiest bisect.
 
 ## Environment variables note
 

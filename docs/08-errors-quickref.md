@@ -42,6 +42,8 @@
 | `stream disconnected before completion` | 网络 / OneDrive 同步盘 / 超长会话 | [03](03-network-proxy.md) 深挖小节 |
 | 每次启动都弹「信任此目录」 | 目录未信任 / 版本行为 | [06](06-sandbox-windows.md) |
 | 每周限额重置时间一直变 | 滚动 7 天窗口，设计如此 | [05](05-models-limits.md) |
+| 越用越慢 / 回复越来越迟钝 | 上下文膨胀——`/compact` 或拆会话 | [15 性能与体验](15-codex-performance.md) |
+| 启动慢 / 第一个动作前卡住 | MCP server 启动超时（官方默认 10s） | [15](15-codex-performance.md) · [07](07-mcp.md) |
 | VS Code 选 WSL agent 后进不去 / 崩溃 | 全局状态文件 | [10](10-ide-vscode.md) |
 
 ## 通用排查五步法（速记）
