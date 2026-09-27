@@ -36,6 +36,7 @@ jobs:
       - name: Node 脚本语法检查
         run: |
           node --check scripts/gen-releases.mjs
+          node --check scripts/gen-release-notes.mjs
           for f in tool/*.mjs; do node --check "$f"; done
 
       - name: Markdown 相对链接检查

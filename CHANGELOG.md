@@ -4,6 +4,17 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.28.0] - 2026-09-26
+
+### 新增
+
+- **发版自动化闭环**：`scripts/gen-release-notes.mjs` 把 CHANGELOG 对应小节生成 Release 说明（`--at` 指定版本、`--out` 写文件）；publish 工作流新增 release job——推 tag 后自动跑测试、发 npm、用该脚本创建 GitHub Release，release-pdf 工作流随之自动附离线 PDF。发版从此只剩「推 tag」一步
+- 夹具测试覆盖 notes 生成器（扩到 27 项）；CI 语法检查登记新脚本
+
+### 工程化
+
+- npm 包体积审计：77.7 kB 压缩 / 213.5 kB 解压 / 43 个文件，无多余文件（files: tool + docs + README）
+
 ## [1.27.0] - 2026-09-26
 
 ### 新增

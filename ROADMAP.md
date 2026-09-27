@@ -23,8 +23,8 @@
 ## 工程化
 
 - [x] CI 增加 Windows runner 跑夹具测试——v1.25.0 完成（`windows-fixture` job：Git Bash + Node 语法/冒烟/夹具双平台验证）
-- [ ] 发版自动化：CHANGELOG 最新小节 → GitHub Release body 的生成脚本（省去手动复制）
-- [ ] npm 包体积审计：`npm pack` 预览 + files 字段核对
+- [x] 发版自动化——v1.28.0 完成（`scripts/gen-release-notes.mjs`：CHANGELOG 小节 → Release 说明；publish 工作流推 tag 后自动创建 GitHub Release，release-pdf 随之自动附 PDF——发版只剩「推 tag」一步）
+- [x] npm 包体积审计——v1.28.0 完成（`npm pack --dry-run`：77.7 kB 压缩 / 213.5 kB 解压 / 43 个文件，仅 tool + docs + README，无多余文件）
 - [ ] `docs/releases.md` 生成器支持预发布版过滤开关
 
 ## 已知取舍（有意不做）
