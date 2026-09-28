@@ -4,6 +4,17 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.30.0] - 2026-09-28
+
+### 新增
+
+- codex-doctor CLI **1.10.0**
+- `clean archived_sessions`：把 Codex 自身归档区 `~/.codex/archived_sessions/`（`/archive` 归档的会话落在这里）的旧文件并入 `~/.codex/archive/` 统一管理——仍是预演制、移动而非删除；目录不存在则提示无需处理，清空后连同空目录一起收走（`sessions`/`log` 的根目录仍保留）。真机实测预演检出 22 个旧文件约 117 MB，零副作用
+
+### 文档
+
+- docs/13 命令表、docs/09 例行清理表、docs/14 目录解剖补 `archived_sessions/` 条目（中英同步）
+
 ## [1.29.0] - 2026-09-28
 
 ### 新增

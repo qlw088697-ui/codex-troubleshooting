@@ -36,6 +36,7 @@ Directory contents vary slightly between versions; trust what you actually see. 
 | Target | Action | Frequency |
 |---|---|---|
 | Session history `~/.codex/sessions/` | Archive or delete once you don't need to revisit them | As needed |
+| Codex's own archive `~/.codex/archived_sessions/` | `codex-doctor clean archived_sessions` (folds into the unified archive, dry-run first) | As needed |
 | Logs `~/.codex/log/` | Safe to clear | Keep them until a problem is diagnosed first |
 | npm cache | `npm cache clean --force` | When npm misbehaves |
 

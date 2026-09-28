@@ -18,6 +18,7 @@ English | [中文](14-codex-home-anatomy.md)
 | `auth.json` | Login credentials (OAuth token / API key) | ❌ never delete or share | **Treat as a password**; the 401 last resort = back up, delete, re-login ([02](02-login-auth.en.md)) |
 | `AGENTS.md` | Global project memory, injected into every session | ✅ editable / deletable | The project-root AGENTS.md takes precedence ([11](11-tips.en.md)) |
 | `sessions/` | Full session records (date-nested JSONL, incl. token usage) | ✅ archivable | `clean sessions` to archive, `sessions --stats` for usage ([13](13-codex-doctor.en.md)) |
+| `archived_sessions/` | Codex's own session archive (sessions you archived via `/archive` land here; absence is normal) | ✅ archivable | `clean archived_sessions` folds it into the unified archive ([13](13-codex-doctor.en.md)) |
 | `log/` | Runtime logs (full error context: URLs, status codes, retries) | ✅ clearable | `logs --errors` for one-shot evidence, `clean logs` to archive ([13](13-codex-doctor.en.md)) |
 | `history.jsonl` | The prompts you typed in the terminal | ✅ deletable | Loses only input history; config and credentials unaffected |
 | `archive/` | Where `codex-doctor clean` archives to (created by this tool) | ✅ deletable after review | `archive list` / `archive delete` ([13](13-codex-doctor.en.md)) |

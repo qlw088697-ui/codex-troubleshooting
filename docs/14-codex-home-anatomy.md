@@ -18,6 +18,7 @@
 | `auth.json` | 登录凭据（OAuth token / API Key） | ❌ 不删、不分享 | **等同密码**；401 终极大招 = 备份后删除重登（[02](02-login-auth.md)） |
 | `AGENTS.md` | 全局项目记忆，注入所有会话 | ✅ 可改可删 | 项目根目录的 AGENTS.md 优先级更高（[11](11-tips.md)） |
 | `sessions/` | 会话完整记录（按日期分层 JSONL，含 token 用量） | ✅ 可归档 | `clean sessions` 归档、`sessions --stats` 查用量（[13](13-codex-doctor.md)） |
+| `archived_sessions/` | Codex 自身的会话归档区（被 `/archive` 归档的会话落在这里；不存在属正常） | ✅ 可归档 | `clean archived_sessions` 并入统一归档区（[13](13-codex-doctor.md)） |
 | `log/` | 运行日志（完整报错上下文：URL、状态码、重试） | ✅ 可清空 | `logs --errors` 一键取证、`clean logs` 归档（[13](13-codex-doctor.md)） |
 | `history.jsonl` | 你在终端输入过的提问历史 | ✅ 可删 | 只丢输入历史，不影响配置与凭据 |
 | `archive/` | `codex-doctor clean` 的归档区（本工具创建） | ✅ 确认后可删 | `archive list` / `archive delete`（[13](13-codex-doctor.md)） |

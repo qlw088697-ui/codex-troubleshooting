@@ -27,6 +27,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `doctor` | 全套环境自检（**中转模式感知**、codex 版本过期检测、MCP 启动命令可达性 + 可选 `--mcp-smoke` initialize 握手深检、auth.json 结构校验（损坏/空壳检出）、Windows 执行策略与系统代理、OneDrive 坑位、登录态有效期、log 目录体积；`--no-network` 跳过网络探测，`--json` 供脚本消费，`--strict` 有警告也返回非零） | 只读（`--mcp-smoke` 会短暂拉起 MCP 进程） |
 | `clean sessions [--days 30]` | 归档超过 N 天的会话文件（默认**预演**，`--yes` 才执行） | 低（归档而非删除） |
 | `clean logs [--days 14]` | 同上，针对日志 | 低 |
+| `clean archived_sessions [--days 30]` | 把 Codex 自身归档区 `~/.codex/archived_sessions/` 的旧文件并入统一归档区；目录不存在则提示无需处理 | 低 |
 | `backup [--out DIR]` | 备份 config.toml + auth.json 到带时间戳目录 | 只读 |
 | `restore <dir>` | 从备份目录恢复 | 中（覆盖现有文件） |
 | `auth reset` | 备份并删除 auth.json，引导重新 `codex login`（401 终极大招的一键化） | 中 |

@@ -37,6 +37,7 @@
 | 对象 | 操作 | 频率 |
 |---|---|---|
 | 会话历史 `~/.codex/sessions/` | 确认不需要回溯后按需删除/归档 | 按需 |
+| Codex 归档区 `~/.codex/archived_sessions/` | `codex-doctor clean archived_sessions`（并入统一归档区，预演制） | 按需 |
 | 日志 `~/.codex/log/` | 可直接清空 | 出问题前先留档 |
 | npm 缓存 | `npm cache clean --force` | npm 异常时 |
 

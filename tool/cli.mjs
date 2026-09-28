@@ -11,7 +11,7 @@ import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.9.0';
+const VERSION = '1.10.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -23,8 +23,9 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
                                   --json         输出 JSON（供脚本消费）
                                   --strict       有 WARN 也返回非零退出码
                                   --mcp-smoke    真实拉起 MCP server 做 initialize 握手（默认关）
-  clean <sessions|logs>         归档超过 N 天的会话/日志（默认预演，--yes 才执行）
-                                  --days N       阈值天数（sessions 默认 30，logs 默认 14）
+  clean <sessions|logs|archived_sessions>
+                                 归档超过 N 天的会话/日志/旧版归档目录（默认预演，--yes 才执行）
+                                  --days N       阈值天数（sessions/archived_sessions 默认 30，logs 默认 14）
                                   --yes          真正执行（否则仅预演）
   backup [--out DIR]            备份 config.toml + auth.json 到带时间戳目录
   restore <dir>                 从备份目录恢复
@@ -101,8 +102,8 @@ async function main() {
     }
     case 'clean': {
       const target = rest[0];
-      if (target !== 'sessions' && target !== 'logs') {
-        console.error('用法: codex-doctor clean <sessions|logs> [--days N] [--yes]');
+      if (target !== 'sessions' && target !== 'logs' && target !== 'archived_sessions') {
+        console.error('用法: codex-doctor clean <sessions|logs|archived_sessions> [--days N] [--yes]');
         process.exitCode = 1;
         break;
       }

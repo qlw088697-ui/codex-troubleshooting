@@ -1,7 +1,14 @@
-// clean：把超过 N 天的会话/日志文件归档到 ~/.codex/archive/（移动而非删除）
+// clean：把超过 N 天的会话/日志/旧归档文件移动到 ~/.codex/archive/（移动而非删除）
 import fs from 'node:fs';
 import path from 'node:path';
 import { CODEX_DIR, ensureDir, exists, timestamp, walkFiles } from './util.mjs';
+
+// CLI 目标名 → ~/.codex 下的目录（archived_sessions 是 Codex 自身的会话归档区，存在才处理）
+const TARGET_DIR = {
+  sessions: 'sessions',
+  logs: 'log',
+  archived_sessions: 'archived_sessions',
+};
 
 function pruneEmptyDirs(root) {
   if (!exists(root)) return;
@@ -19,10 +26,7 @@ function pruneEmptyDirs(root) {
 }
 
 export function cleanTarget({ target, days, yes }) {
-  const dir =
-    target === 'sessions'
-      ? path.join(CODEX_DIR, 'sessions')
-      : path.join(CODEX_DIR, 'log');
+  const dir = path.join(CODEX_DIR, TARGET_DIR[target] || target);
 
   if (!exists(dir)) {
     return { lines: [`${dir} 不存在，无需清理`], moved: 0 };
@@ -67,6 +71,15 @@ export function cleanTarget({ target, days, yes }) {
     }
   }
   pruneEmptyDirs(dir);
+  if (target === 'archived_sessions') {
+    // Codex 自身的归档区：清空后连同目录一起收走（Codex 需要时会自行重建）；
+    // sessions/log 的根目录是活跃目录，刻意保留
+    try {
+      if (fs.readdirSync(dir).length === 0) fs.rmdirSync(dir);
+    } catch {
+      /* 删除失败无害，留待下次 */
+    }
+  }
   lines.push(`已归档 ${moved} 个文件 → ${dest}`);
   return { lines, moved };
 }
