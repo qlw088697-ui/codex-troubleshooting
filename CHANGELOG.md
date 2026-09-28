@@ -4,6 +4,15 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.31.0] - 2026-09-28
+
+### 新增
+
+- codex-doctor CLI **1.11.0**
+- `versions --notes <tag>`：拉取 openai/codex 指定版本的发布说明（升级前先看改了什么）——自动补全漏写的 `v` 前缀、404 给出友好提示、超长正文截断附完整链接；新增 `CODEX_DOCTOR_GH_API` 环境变量可把 GitHub API 指向加速网关（国内网络友好，`versions` 列表同样生效）
+- versions 命令网络失败不再抛堆栈，改为友好报错 + 非零退出码
+- 夹具测试扩到 29 项（本地假 GitHub API 注入，离线可测）
+
 ## [1.30.0] - 2026-09-28
 
 ### 新增

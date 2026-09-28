@@ -72,11 +72,18 @@ export async function resetAuth(yes) {
   };
 }
 
-export async function listVersions(limit = 10) {
+// GitHub API 基址可覆盖（api.github.com 在部分网络不稳时，可指向自建/加速网关；测试也用它注入假服务）
+const GH_API = (process.env.CODEX_DOCTOR_GH_API || 'https://api.github.com').replace(/\/+$/, '');
+
+function ghHeaders() {
   const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'codex-doctor-cli' };
   if (process.env.GH_TOKEN) headers.Authorization = `Bearer ${process.env.GH_TOKEN}`;
+  return headers;
+}
+
+export async function listVersions(limit = 10) {
   const n = Math.min(Math.max(Number(limit) || 10, 1), 50);
-  const res = await fetch(`https://api.github.com/repos/openai/codex/releases?per_page=${n}`, { headers });
+  const res = await fetch(`${GH_API}/repos/openai/codex/releases?per_page=${n}`, { headers: ghHeaders() });
   if (!res.ok) throw new Error(`GitHub API HTTP ${res.status}`);
   const releases = (await res.json()).filter((r) => !r.draft);
   return releases.slice(0, n).map((r) => ({
@@ -84,6 +91,39 @@ export async function listVersions(limit = 10) {
     date: (r.published_at || '').slice(0, 10) || '—',
     prerelease: r.prerelease === true,
   }));
+}
+
+// 拉取单个版本的发布说明，辅助评估是否值得升级
+export async function fetchReleaseNotes(tag) {
+  const t = String(tag || '').trim().replace(/^@/u, '');
+  if (!t || t === '--notes') {
+    throw new Error('缺少版本标签，例如: codex-doctor versions --notes v0.152.0（先用 versions 查可用标签）');
+  }
+  const url = (x) => `${GH_API}/repos/openai/codex/releases/tags/${encodeURIComponent(x)}`;
+  let res = await fetch(url(t), { headers: ghHeaders() });
+  // 官方标签带 v 前缀（如 v0.152.0）；用户漏写时自动补一次
+  if (res.status === 404 && !/^v/i.test(t)) res = await fetch(url(`v${t}`), { headers: ghHeaders() });
+  if (res.status === 404) {
+    throw new Error(`GitHub 上没有 ${t} 的 Release（用 versions 核对标签名；草稿与纯 tag 不可见）`);
+  }
+  if (!res.ok) {
+    throw new Error(`GitHub API HTTP ${res.status}（频繁触发限流可设置 GH_TOKEN 环境变量提升配额）`);
+  }
+  const r = await res.json();
+  const body = String(r.body || '').trim();
+  const lines = [];
+  lines.push(`${r.tag_name}${r.name ? `  ${r.name}` : ''}`);
+  lines.push(`发布: ${(r.published_at || '').slice(0, 10) || '—'}${r.prerelease ? '  [预发布]' : ''}`);
+  lines.push('');
+  if (!body) {
+    lines.push('（该 Release 没有正文说明）');
+  } else {
+    const MAX = 2400;
+    lines.push(body.length > MAX ? `${body.slice(0, MAX)}\n...（正文过长已截断，完整内容见下方链接）` : body);
+  }
+  lines.push('');
+  lines.push(`完整说明: ${r.html_url}`);
+  return { lines };
 }
 
 // ---------- 归档管理 ----------

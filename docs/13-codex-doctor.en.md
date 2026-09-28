@@ -34,6 +34,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 | `archive list` | List archive folders with sizes | read-only |
 | `archive delete <name\|--all>` | Delete archives (interactive confirm by default, `--yes` to skip) | medium (deletes, requires confirm) |
 | `versions [-n 10]` | List the latest openai/codex releases (prerelease flagged) | read-only |
+| `versions --notes <tag>` | Fetch the release notes for one version (read before upgrading); if api.github.com is unstable, set `CODEX_DOCTOR_GH_API` to an accelerator/gateway | read-only |
 | `config` | Read-only summary: model / provider / approval & sandbox / profiles / relays / MCP / auth mode (secrets masked) | read-only |
 | `sessions [-n 10] [--dir keyword]` | Browse past sessions: time, workdir, source, first-prompt preview; `--dir` filters by directory — find "that conversation" | read-only |
 | `sessions --search keyword [--deep]` | Search sessions by keyword (first 256KB of each file by default, `--deep` scans fully) | read-only |

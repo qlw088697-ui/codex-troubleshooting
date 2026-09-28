@@ -2,7 +2,7 @@
 // codex-doctor CLI 入口：codex-doctor <command> [options]
 import { collectChecks, summarize, renderHuman } from './checks.mjs';
 import { cleanTarget } from './clean.mjs';
-import { backupConfig, restoreBackup, resetAuth, listVersions, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
+import { backupConfig, restoreBackup, resetAuth, listVersions, fetchReleaseNotes, listArchives, deleteArchive, checkUpdate } from './ops.mjs';
 import { listSessions, searchSessions, readTranscript, exportTranscriptMarkdown, sessionStats } from './sessions.mjs';
 import { listLogs, resolveLogFile, tailLog, searchLogs, errorLines } from './logs.mjs';
 import { buildReport, openInDefaultApp } from './report.mjs';
@@ -11,7 +11,7 @@ import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.10.0';
+const VERSION = '1.11.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 
@@ -33,6 +33,7 @@ const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零
   archive list                  查看归档目录与体积
   archive delete <名称|--all>   删除归档（需 --yes 或交互确认）
   versions [-n N]               查看 openai/codex 最近 N 个版本（默认 10）
+  versions --notes <tag>        查看指定版本的发布说明（评估是否值得升级）
   config                        只读摘要：模型 / provider / 审批沙箱 / profiles / 中转 / MCP / 认证方式
   sessions [-n N] [--dir 关键字] 浏览历史会话：时间、目录、来源、首条提问预览
              [--search 关键词] [--deep] 按关键词搜索会话（--deep 全文扫描）
@@ -65,6 +66,7 @@ function parseFlags(args) {
     else if (a === '-n' || a === '--limit') flags.limit = Number(args[++i]);
     else if (a === '--dir') flags.dir = args[++i];
     else if (a === '--search') flags.search = args[++i];
+    else if (a === '--notes') flags.notes = args[++i];
     else if (a === '--deep') flags.deep = true;
     else if (a === '--show') flags.show = true;
     else if (a === '--pick') flags.pick = Number(args[++i]);
@@ -136,10 +138,20 @@ async function main() {
       break;
     }
     case 'versions': {
-      const rels = await listVersions(flags.limit);
-      console.log('版本        日期        预发布');
-      for (const r of rels) {
-        console.log(`${r.tag.padEnd(24)} ${r.date}  ${r.prerelease ? '是' : ''}`);
+      try {
+        if (flags.notes) {
+          const r = await fetchReleaseNotes(flags.notes);
+          print(r.lines);
+        } else {
+          const rels = await listVersions(flags.limit);
+          console.log('版本        日期        预发布');
+          for (const r of rels) {
+            console.log(`${r.tag.padEnd(24)} ${r.date}  ${r.prerelease ? '是' : ''}`);
+          }
+        }
+      } catch (e) {
+        console.error(`versions 失败: ${e.message}`);
+        process.exitCode = 1;
       }
       break;
     }
