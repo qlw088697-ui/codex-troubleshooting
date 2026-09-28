@@ -31,6 +31,7 @@
 | Config written but **not taking effect** | Root keys placed after a `[table]` / session not restarted | [04 gotcha](04-config.md) |
 | `codex: command not found` | PATH problem | [01 Installation](01-installation.md) |
 | `EACCES` / `EPERM` (during install) | npm global directory permissions | [01](01-installation.md) |
+| codex misbehaves after upgrade / global package corrupted | npm global package unhealthy — the doctor's npm-global check detects it; reinstall to fix | [01](01-installation.md) · [13](13-codex-doctor.md) |
 | PowerShell "running scripts is disabled" | Execution policy blocking `codex.ps1` | [01](01-installation.md) |
 | Writes denied / commands intercepted | Sandbox working as intended, policy too strict | [06 Sandbox & Windows](06-sandbox-windows.md) |
 | Sandbox issues on Windows | Native support still maturing | [06](06-sandbox-windows.md), or use WSL2 |

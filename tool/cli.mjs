@@ -11,7 +11,7 @@ import { configSummary } from './config.mjs';
 import { CODEX_DIR, exists } from './util.mjs';
 import path from 'node:path';
 
-const VERSION = '1.11.0';
+const VERSION = '1.12.0';
 
 const HELP = `codex-doctor v${VERSION} — Codex CLI 维护与排障工具（零依赖）
 

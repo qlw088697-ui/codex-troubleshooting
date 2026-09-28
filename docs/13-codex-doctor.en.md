@@ -24,7 +24,7 @@ node codex-troubleshooting/tool/cli.mjs --help
 
 | Command | Purpose | Risk |
 |---|---|---|
-| `doctor` | Full environment check (**relay-aware**, codex outdated-version detection, MCP command availability + optional `--mcp-smoke` initialize-handshake deep check, auth.json structure validation (corrupted/empty-shell detection), Windows execution policy & system proxy, OneDrive pitfalls, login-state expiry, log directory size; `--no-network` skips probes, `--json` for scripts, `--strict` fails on warnings) | read-only (`--mcp-smoke` briefly launches MCP processes) |
+| `doctor` | Full environment check (**relay-aware**, codex outdated-version detection, npm global package health (broken/permission/hanging `@openai/codex` detection), MCP command availability + optional `--mcp-smoke` initialize-handshake deep check, auth.json structure validation (corrupted/empty-shell detection), Windows execution policy & system proxy, OneDrive pitfalls, login-state expiry, log directory size; `--no-network` skips probes, `--json` for scripts, `--strict` fails on warnings) | read-only (`--mcp-smoke` briefly launches MCP processes) |
 | `clean sessions [--days 30]` | Archive session files older than N days (**dry-run by default**, `--yes` to execute) | low (archive, not delete) |
 | `clean logs [--days 14]` | Same, for logs | low |
 | `clean archived_sessions [--days 30]` | Fold Codex's own archive dir `~/.codex/archived_sessions/` into the unified archive; if the dir doesn't exist you're told there's nothing to do | low |

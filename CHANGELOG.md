@@ -4,6 +4,18 @@
 
 > codex-doctor CLI 的版本号（`--version`）独立演进，与仓库 Release 版本号不同步，以 npm 页面为准。
 
+## [1.32.0] - 2026-09-29
+
+### 新增
+
+- codex-doctor CLI **1.12.0**
+- doctor 新增 `npm-global` 检查：`npm ls -g @openai/codex` 体检 npm 全局包——健康（报版本）、未通过 npm 安装（brew/二进制，info 跳过）、权限/损坏（fail 并提示重装命令）、`npm ls` 卡死（warn，常见于杀软首次扫描或全局目录过大）四种状态分明
+- 真机验证：检出本机 `@openai/codex@0.152.1`；夹具测试扩到 30 项（假 npm 注入 PATH，健康/损坏两态离线可测）
+
+### 文档
+
+- docs/01 EACCES 小节、docs/08 速查表、docs/13 doctor 行同步 npm-global 说明（中英）
+
 ## [1.31.0] - 2026-09-28
 
 ### 新增

@@ -71,6 +71,8 @@ npm install -g @openai/codex
 
 Windows 下则以管理员身份运行一次安装，或者用 `npm config set prefix` 把全局目录改到用户目录下。
 
+> 💡 `codex-doctor doctor` 的 `npm-global` 检查项会体检 npm 全局包：`@openai/codex` 损坏、权限异常、`npm ls` 卡死都会直接检出。升级后命令行为异常，先跑一次自检再考虑重装。
+
 ### 安装超时 / `ERR_SOCKET_TIMEOUT` / 下载中断
 
 **原因**：默认 npm 源在国内网络下不稳定，属于网络问题而不是 Node 问题。

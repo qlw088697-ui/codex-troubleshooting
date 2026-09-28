@@ -11,7 +11,7 @@
 - [x] `sessions --stats --top N`：按总消耗排序，快速定位"最烧钱的会话"——v1.26.0 完成
 - [x] `clean` 支持 `archived_sessions/`（老版本 Codex 的归档目录，存在才处理）——v1.30.0 完成（CLI 1.10.0：并入统一归档区，预演制 + 空目录收走；真机预演 22 文件/117MB 零副作用，夹具 28 项全绿）
 - [x] `versions --notes <tag>`：拉取指定版本 release notes 摘要，辅助评估是否值得升级——v1.31.0 完成（CLI 1.11.0：真机拉取 rust-v0.158.0 说明验证；附赠 `CODEX_DOCTOR_GH_API` 加速网关覆盖，夹具 29 项全绿）
-- [ ] doctor：npm 全局包健康（`npm ls -g @openai/codex` 权限/损坏检出）
+- [x] doctor：npm 全局包健康（`npm ls -g @openai/codex` 权限/损坏检出）——v1.32.0 完成（CLI 1.12.0：健康/未装/损坏/卡死四态分明，真机检出 0.152.1，夹具 30 项全绿）
 
 ## 文档
 

@@ -72,6 +72,8 @@ npm install -g @openai/codex
 
 On Windows: run the install once as administrator, or move the global prefix into your user directory with `npm config set prefix`.
 
+> 💡 The `npm-global` check in `codex-doctor doctor` health-checks the npm global package: a corrupted `@openai/codex`, permission trouble, or a hanging `npm ls` are all detected. If codex misbehaves after an upgrade, run the doctor before reinstalling.
+
 ### Install times out / `ERR_SOCKET_TIMEOUT` / download interrupted
 
 **Cause**: the default npm registry is unstable on some networks — it's a network problem, not a Node problem.

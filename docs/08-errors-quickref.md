@@ -33,6 +33,7 @@
 | 配置写了但**不生效** | 根级键写在 `[表]` 之后 / 忘了重启会话 | [04](04-config.md) 第一大坑 |
 | `codex: command not found` | PATH 问题 | [01](01-installation.md) |
 | `EACCES` / `EPERM`（安装时） | npm 全局目录权限 | [01](01-installation.md) |
+| 升级后 codex 命令行为异常 / 全局包损坏 | npm 全局包异常——doctor 的 npm-global 检查可检出，重装可解 | [01](01-installation.md) · [13](13-codex-doctor.md) |
 | PowerShell「禁止运行脚本」 | 执行策略拦截 `codex.ps1` | [01](01-installation.md) |
 | 写文件被拒 / 命令被拦截 | 沙箱正常工作，策略太严 | [06 沙箱与 Windows](06-sandbox-windows.md) |
 | Windows 沙箱异常 | 原生支持不完善 | [06](06-sandbox-windows.md)，或改用 WSL2 |

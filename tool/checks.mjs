@@ -63,6 +63,25 @@ function runShell(cmdString) {
   }
 }
 
+// npm ls -g 区分「健康 / 未装 / 损坏」，需要 stdout、stderr 与退出码三者
+function npmLsGlobal() {
+  try {
+    const out = execFileSync('npm ls -g --depth=0 @openai/codex', {
+      encoding: 'utf8',
+      timeout: 20000,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      shell: true,
+    });
+    return { code: 0, out: out.trim(), err: '' };
+  } catch (e) {
+    return {
+      code: typeof e.code === 'number' ? e.code : e.code === 'ETIMEDOUT' ? 'timeout' : 1,
+      out: String(e.stdout || '').trim(),
+      err: String(e.stderr || '').trim(),
+    };
+  }
+}
+
 function commandExists(cmd) {
   if (/[\\\/]/.test(cmd)) return exists(cmd);
   const check = process.platform === 'win32' ? `where ${cmd}` : `command -v ${cmd}`;
@@ -255,6 +274,26 @@ export async function collectChecks({ network = true, mcpSmoke = false } = {}) {
     add('node', major >= 20 ? 'ok' : 'warn', `node ${nodeVer}${major >= 20 ? '' : '（建议 20 LTS+）'}`, 'docs/01-installation.md');
   } else {
     add('node', 'info', '未检测到 node（brew/二进制方式安装 codex 则无妨）');
+  }
+
+  // 2.5 npm 全局包健康（@openai/codex 损坏 / 权限问题检出；brew/二进制安装则跳过）
+  if (commandExists('npm')) {
+    const r = npmLsGlobal();
+    const m = r.out.match(/@openai\/codex@(\S+)/);
+    if (r.code === 0 && m) {
+      add('npm-global', 'ok', `npm 全局包健康: @openai/codex@${m[1]}`, 'docs/01-installation.md');
+    } else if (r.code === 'timeout') {
+      add('npm-global', 'warn', 'npm ls 超时（20s）——全局 npm 目录可能被权限或安全软件卡住，升级失灵时优先查它', 'docs/01-installation.md');
+    } else if (r.code !== 0 && /\(empty\)/.test(r.out)) {
+      add('npm-global', 'info', 'npm 全局未安装 @openai/codex（可能通过 brew/二进制安装，跳过）');
+    } else if (r.code !== 0) {
+      const why = (r.err || r.out || '').split(/\r?\n/).filter(Boolean).slice(0, 2).join(' / ').slice(0, 160);
+      add('npm-global', 'fail', `npm 全局包异常（权限/损坏）：${why || `exit ${r.code}`}——重装可解：npm i -g @openai/codex`, 'docs/01-installation.md');
+    } else {
+      add('npm-global', 'warn', `npm ls 输出无法识别：${(r.out || '(空)').slice(0, 80)}`, 'docs/01-installation.md');
+    }
+  } else {
+    add('npm-global', 'info', '未检测到 npm（brew/二进制方式安装 codex 则无妨）');
   }
 
   // 3. 配置目录与 config.toml
