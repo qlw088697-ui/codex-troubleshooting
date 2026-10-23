@@ -7,6 +7,9 @@
 
 | 版本 | 发布日期 | 预发布 | 说明 |
 |---|---|---|---|
+| [rust-v0.164.0](https://github.com/openai/codex/releases/tag/rust-v0.164.0) | 2026-10-23 |  | 0.164.0 |
+| [rust-v0.164.0-alpha.12](https://github.com/openai/codex/releases/tag/rust-v0.164.0-alpha.12) | 2026-10-22 | 是 | 0.164.0-alpha.12 |
+| [rust-v0.164.0-alpha.11.1](https://github.com/openai/codex/releases/tag/rust-v0.164.0-alpha.11.1) | 2026-10-23 | 是 | 0.164.0-alpha.11.1 |
 | [rust-v0.164.0-alpha.11](https://github.com/openai/codex/releases/tag/rust-v0.164.0-alpha.11) | 2026-10-22 | 是 | 0.164.0-alpha.11 |
 | [rust-v0.163.0-alpha.11.2](https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.11.2) | 2026-10-22 | 是 | 0.163.0-alpha.11.2 |
 | [rust-v0.164.0-alpha.9](https://github.com/openai/codex/releases/tag/rust-v0.164.0-alpha.9) | 2026-10-21 | 是 | 0.164.0-alpha.9 |
@@ -54,6 +57,3 @@
 | [rust-v0.162.0-alpha.7](https://github.com/openai/codex/releases/tag/rust-v0.162.0-alpha.7) | 2026-10-02 | 是 | 0.162.0-alpha.7 |
 | [rust-v0.162.0-alpha.6](https://github.com/openai/codex/releases/tag/rust-v0.162.0-alpha.6) | 2026-10-02 | 是 | 0.162.0-alpha.6 |
 | [rust-v0.162.0-alpha.5](https://github.com/openai/codex/releases/tag/rust-v0.162.0-alpha.5) | 2026-10-02 | 是 | 0.162.0-alpha.5 |
-| [rust-v0.162.0-alpha.4](https://github.com/openai/codex/releases/tag/rust-v0.162.0-alpha.4) | 2026-10-02 | 是 | 0.162.0-alpha.4 |
-| [rust-v0.162.0-alpha.3](https://github.com/openai/codex/releases/tag/rust-v0.162.0-alpha.3) | 2026-10-02 | 是 | 0.162.0-alpha.3 |
-| [rust-v0.162.0-alpha.2](https://github.com/openai/codex/releases/tag/rust-v0.162.0-alpha.2) | 2026-10-02 | 是 | 0.162.0-alpha.2 |
