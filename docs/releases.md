@@ -7,6 +7,11 @@
 
 | 版本 | 发布日期 | 预发布 | 说明 |
 |---|---|---|---|
+| [rust-v0.170.0](https://github.com/openai/codex/releases/tag/rust-v0.170.0) | 2026-11-18 |  | 0.170.0 |
+| [rust-v0.171.0-alpha.13](https://github.com/openai/codex/releases/tag/rust-v0.171.0-alpha.13) | 2026-11-18 | 是 | 0.171.0-alpha.13 |
+| [rust-v0.170.0-alpha.4.2](https://github.com/openai/codex/releases/tag/rust-v0.170.0-alpha.4.2) | 2026-11-18 | 是 | 0.170.0-alpha.4.2 |
+| [rust-v0.169.1](https://github.com/openai/codex/releases/tag/rust-v0.169.1) | 2026-11-17 |  | 0.169.1 |
+| [rust-v0.171.0-alpha.12](https://github.com/openai/codex/releases/tag/rust-v0.171.0-alpha.12) | 2026-11-17 | 是 | 0.171.0-alpha.12 |
 | [rust-v0.171.0-alpha.11](https://github.com/openai/codex/releases/tag/rust-v0.171.0-alpha.11) | 2026-11-17 | 是 | 0.171.0-alpha.11 |
 | [rust-v0.170.0-alpha.4.1](https://github.com/openai/codex/releases/tag/rust-v0.170.0-alpha.4.1) | 2026-11-17 | 是 | 0.170.0-alpha.4.1 |
 | [rust-v0.171.0-alpha.9](https://github.com/openai/codex/releases/tag/rust-v0.171.0-alpha.9) | 2026-11-16 | 是 | 0.171.0-alpha.9 |
@@ -52,8 +57,3 @@
 | [rust-v0.167.0-alpha.2](https://github.com/openai/codex/releases/tag/rust-v0.167.0-alpha.2) | 2026-11-01 | 是 | 0.167.0-alpha.2 |
 | [rust-v0.166.0](https://github.com/openai/codex/releases/tag/rust-v0.166.0) | 2026-10-29 |  | 0.166.0 |
 | [rust-v0.166.0-alpha.6](https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.6) | 2026-10-29 | 是 | 0.166.0-alpha.6 |
-| [rust-v0.166.0-alpha.5.1](https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.5.1) | 2026-10-28 | 是 | 0.166.0-alpha.5.1 |
-| [rust-v0.166.0-alpha.5](https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.5) | 2026-10-28 | 是 | 0.166.0-alpha.5 |
-| [rust-v0.165.0](https://github.com/openai/codex/releases/tag/rust-v0.165.0) | 2026-10-27 |  | 0.165.0 |
-| [rust-v0.166.0-alpha.4](https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.4) | 2026-10-28 | 是 | 0.166.0-alpha.4 |
-| [rust-v0.166.0-alpha.3](https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.3) | 2026-10-27 | 是 | 0.166.0-alpha.3 |
